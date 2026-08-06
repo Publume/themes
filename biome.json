@@ -20,6 +20,6 @@
     }
   },
   "files": {
-    "includes": ["**", "!!themes", "!!**/.astro", "!!**/dist", "!!**/node_modules"]
+    "includes": ["**", "!!shared", "!!themes", "!!**/.local", "!!**/dist", "!!**/node_modules"]
   }
 }

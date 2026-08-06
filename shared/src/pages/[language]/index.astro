@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content'
+import Document from '../../layouts/Document.astro'
+import { articlesForLanguage } from '../../lib/articles'
+import { languageHomePath, siteConfig, textDirection } from '../../lib/site'
+import Home from '../../theme/Home.astro'
+
+export function getStaticPaths() {
+  return siteConfig.outputLanguages
+    .filter((language) => language !== siteConfig.defaultContentLanguage)
+    .map((language) => ({ params: { language }, props: { contentLanguage: language } }))
+}
+
+type Props = { contentLanguage: string }
+const { contentLanguage } = Astro.props
+const articles = articlesForLanguage(await getCollection('articles'), contentLanguage)
+const alternates = siteConfig.outputLanguages.map((language) => ({
+  language,
+  href: new URL(languageHomePath(language), Astro.site ?? 'https://example.invalid/').href,
+}))
+---
+
+<Document contentLanguage={contentLanguage} alternates={alternates}>
+  <div lang={contentLanguage} dir={textDirection(contentLanguage)}>
+    <Home articles={articles} contentLanguage={contentLanguage} />
+  </div>
+</Document>

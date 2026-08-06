@@ -1,0 +1,25 @@
+@layer publume-runtime {
+  .language-switcher {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  .language-switcher a {
+    padding: 0.3rem 0.65rem;
+    border: 1px solid color-mix(in srgb, var(--text) 14%, transparent);
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: var(--type-caption-size);
+    font-weight: var(--weight-bold);
+    line-height: var(--type-caption-leading);
+    text-decoration: none;
+  }
+
+  .language-switcher a[aria-current="page"] {
+    border-color: color-mix(in srgb, var(--primary) 38%, transparent);
+    color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 8%, transparent);
+  }
+}

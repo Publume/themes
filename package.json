@@ -2,7 +2,7 @@
   "name": "@publume/themes",
   "version": "0.1.0",
   "private": true,
-  "description": "Self-contained static site themes for Publume.",
+  "description": "A shared multilingual site runtime with composable Publume visual themes.",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -15,13 +15,14 @@
   },
   "scripts": {
     "contract": "bun scripts/check-contract.ts",
+    "dev:theme": "bun scripts/dev-theme.ts",
     "typecheck": "tsc --noEmit",
     "lint": "biome lint .",
-    "format": "biome format --write . && bun run --cwd themes/editorial format",
+    "format": "biome format --write .",
     "format:check": "biome format .",
     "quality": "biome check .",
-    "check:editorial": "bun run --cwd themes/editorial check",
-    "check": "bun run quality && bun run typecheck && bun run contract && bun run check:editorial"
+    "themes:check": "bun scripts/run-themes.ts",
+    "check": "bun run quality && bun run typecheck && bun run contract && bun run themes:check"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.7",

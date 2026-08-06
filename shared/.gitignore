@@ -1,7 +1,5 @@
 node_modules/
 .astro/
 dist/
-coverage/
-.contract/
-.local/
 .DS_Store
+src/styles/fonts.generated.css

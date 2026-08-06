@@ -1,0 +1,20 @@
+---
+import type { Article } from '../lib/articles'
+import { articlePath, formatDate, siteConfig, ui } from '../lib/site'
+
+type Props = { articles: readonly Article[]; contentLanguage: string }
+const { articles, contentLanguage } = Astro.props
+const [lead, ...remaining] = articles
+const dispatches = remaining.slice(0, 3)
+const archive = remaining.slice(3)
+---
+
+<section class="shell issue-intro" aria-labelledby="issue-heading"><div><p class="kicker">{ui.latest}</p><h1 id="issue-heading">{siteConfig.tagline}</h1></div><p>{siteConfig.description}</p></section>
+<section class:list={['shell', 'front-page', { 'single-story': dispatches.length === 0 }]} aria-label={ui.latest}>
+  {lead ? <>
+    <div class="lead-column"><p class="section-label"><span>{ui.latest}</span><span>01</span></p><article class="story story-lead"><div class="story-meta"><span class="story-number">01</span><time datetime={lead.data.publishedAt.toISOString()}>{formatDate(lead.data.publishedAt, contentLanguage)}</time></div><h2><a href={articlePath(lead.id, contentLanguage)}>{lead.data.title}</a></h2><p class="story-summary">{lead.data.summary}</p>{siteConfig.showTopics && lead.data.topics.length > 0 && <ul class="topic-list" aria-label={ui.topics}>{lead.data.topics.map((topic) => <li>{topic}</li>)}</ul>}<a class="read-link" href={articlePath(lead.id, contentLanguage)}>{ui.readArticle} <span aria-hidden="true">↗</span></a></article></div>
+    {dispatches.length > 0 && <aside class="dispatch-column" aria-labelledby="dispatch-heading"><div class="rail-heading"><p class="kicker">{ui.latest}</p><h2 id="dispatch-heading">{ui.published}</h2></div>{dispatches.map((article,index) => <article class="story story-dispatch"><div class="story-meta"><span class="story-number">{String(index+2).padStart(2,'0')}</span><time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt, contentLanguage)}</time></div><h2><a href={articlePath(article.id, contentLanguage)}>{article.data.title}</a></h2><p class="story-summary">{article.data.summary}</p><a class="read-link" href={articlePath(article.id, contentLanguage)}>{ui.readArticle} <span aria-hidden="true">↗</span></a></article>)}</aside>}
+  </> : <div class="empty-state"><p class="kicker">{ui.monitoring}</p><h2>{ui.emptyTitle}</h2><p>{ui.emptyDescription}</p></div>}
+</section>
+{archive.length > 0 && <section class="shell archive" aria-labelledby="archive-heading"><div class="archive-heading"><p class="kicker">{ui.published}</p><h2 id="archive-heading">{ui.latest}</h2></div><div class="archive-grid">{archive.map((article,index) => <article class="story story-archive"><div class="story-meta"><span class="story-number">{String(index+dispatches.length+2).padStart(2,'0')}</span><time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt, contentLanguage)}</time></div><h2><a href={articlePath(article.id, contentLanguage)}>{article.data.title}</a></h2><p class="story-summary">{article.data.summary}</p><a class="read-link" href={articlePath(article.id, contentLanguage)}>{ui.readArticle} <span aria-hidden="true">↗</span></a></article>)}</div></section>}
+{(siteConfig.newsletterUrl || siteConfig.sponsorUrl) && <aside class="shell letter" aria-label={ui.latest}><div><p class="kicker">{ui.latest}</p><h2>{siteConfig.tagline}</h2></div><div class="letter-actions">{siteConfig.newsletterUrl && <a href={siteConfig.newsletterUrl}>{ui.newsletter} <span>↗</span></a>}{siteConfig.sponsorUrl && <a href={siteConfig.sponsorUrl}>{ui.sponsor} <span>↗</span></a>}</div></aside>}

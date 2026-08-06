@@ -1,0 +1,122 @@
+:root {
+  --font-sans: "Noto Sans Variable", sans-serif;
+  --font-serif: "Noto Serif Variable", serif;
+  --font-mono: "Noto Sans Mono Variable", var(--font-sans);
+  --font-ui: var(--font-sans);
+  --font-body: var(--font-sans);
+  --font-display: var(--font-sans);
+
+  --type-caption-size: 0.8125rem;
+  --type-caption-leading: 1.25rem;
+  --type-meta-size: 0.875rem;
+  --type-meta-leading: 1.25rem;
+  --type-small-size: 0.9375rem;
+  --type-small-leading: 1.5rem;
+  --type-body-size: 1.0625rem;
+  --type-body-leading: 1.75rem;
+  --type-lead-size: 1.375rem;
+  --type-lead-leading: 2.25rem;
+  --type-title-size: 1.375rem;
+  --type-title-leading: 2rem;
+  --type-section-size: 2rem;
+  --type-section-leading: 2.5rem;
+  --type-page-size: 2.5rem;
+  --type-page-leading: 3rem;
+  --type-display-size: 3rem;
+  --type-display-leading: 3.75rem;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+  --tracking-normal: 0;
+  --tracking-tight: -0.025em;
+  --tracking-display: -0.04em;
+  --tracking-label: 0.08em;
+  --measure-reading: 40em;
+}
+
+@layer publume-typography {
+  :where(h1, h2, h3) {
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  :where(h1) {
+    font-size: var(--type-page-size);
+    line-height: var(--type-page-leading);
+  }
+
+  :where(h2) {
+    font-size: var(--type-title-size);
+    line-height: var(--type-title-leading);
+  }
+
+  :where(h3) {
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-leading);
+  }
+
+  :where(small) {
+    font-size: var(--type-caption-size);
+    line-height: var(--type-caption-leading);
+  }
+}
+
+:where(:lang(zh-CN)) {
+  --font-sans: "Noto Sans SC Variable", "Noto Sans Variable", sans-serif;
+  --font-serif: "Noto Serif SC Variable", "Noto Serif Variable", serif;
+}
+
+:where(:lang(zh-TW)) {
+  --font-sans: "Noto Sans TC Variable", "Noto Sans Variable", sans-serif;
+  --font-serif: "Noto Serif TC Variable", "Noto Serif Variable", serif;
+}
+
+:where(:lang(ja)) {
+  --font-sans: "Noto Sans JP Variable", "Noto Sans Variable", sans-serif;
+  --font-serif: "Noto Serif JP Variable", "Noto Serif Variable", serif;
+}
+
+:where(:lang(ko)) {
+  --font-sans: "Noto Sans KR Variable", "Noto Sans Variable", sans-serif;
+  --font-serif: "Noto Serif KR Variable", "Noto Serif Variable", serif;
+}
+
+:where(:lang(ar)) {
+  --font-sans: "Noto Sans Arabic Variable", "Noto Sans Variable", sans-serif;
+  --font-serif: "Noto Naskh Arabic Variable", "Noto Serif Variable", serif;
+}
+
+:where(:lang(hi)) {
+  --font-sans: "Noto Sans Devanagari Variable", "Noto Sans Variable", sans-serif;
+  --font-serif: "Noto Serif Devanagari Variable", "Noto Serif Variable", serif;
+}
+
+:where(:lang(th)) {
+  --font-sans: "Noto Sans Thai Variable", "Noto Sans Variable", sans-serif;
+  --font-serif: "Noto Serif Thai Variable", "Noto Serif Variable", serif;
+}
+
+:where(:lang(ar), :lang(hi), :lang(ja), :lang(ko), :lang(th), :lang(zh-CN), :lang(zh-TW)) {
+  --font-ui: var(--font-sans);
+  --font-body: var(--font-sans);
+  --font-display: var(--font-sans);
+}
+
+:where(:lang(zh-CN), :lang(zh-TW), :lang(ja), :lang(ko)) {
+  --tracking-tight: 0;
+  --tracking-display: 0;
+  --tracking-label: 0;
+}
+
+@media (max-width: 39.99rem) {
+  :root {
+    --type-section-size: 1.375rem;
+    --type-section-leading: 2rem;
+    --type-page-size: 2rem;
+    --type-page-leading: 2.5rem;
+    --type-display-size: 2.5rem;
+    --type-display-leading: 3rem;
+  }
+}
