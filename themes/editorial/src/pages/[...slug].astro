@@ -1,0 +1,69 @@
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { formatDate, siteConfig } from '../lib/site'
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles')
+  return articles.map((article) => ({ params: { slug: article.id }, props: { article } }))
+}
+
+type Props = { article: CollectionEntry<'articles'> }
+const { article } = Astro.props
+const { Content } = await render(article)
+---
+
+<BaseLayout
+  title={article.data.title}
+  description={article.data.summary}
+  language={article.data.language}
+  kind="article"
+  publishedAt={article.data.publishedAt}
+  sources={article.data.sourceUrls}
+>
+  <article class="article shell">
+    <header class="article-header">
+      <div class="article-meta">
+        <time datetime={article.data.publishedAt.toISOString()}>
+          {formatDate(article.data.publishedAt, article.data.language)}
+        </time>
+        <span aria-hidden="true">·</span>
+        <span>{article.data.language.toUpperCase()}</span>
+        {siteConfig.showScore && article.data.score !== undefined && (
+          <>
+            <span aria-hidden="true">·</span>
+            <span>{Math.round(article.data.score * 100)} relevance</span>
+          </>
+        )}
+      </div>
+      <h1>{article.data.title}</h1>
+      <p class="article-summary">{article.data.summary}</p>
+      {siteConfig.showTopics && article.data.topics.length > 0 && (
+        <ul class="topic-list" aria-label="Topics">
+          {article.data.topics.map((topic) => <li>{topic}</li>)}
+        </ul>
+      )}
+    </header>
+
+    <div class="article-body">
+      <Content />
+    </div>
+
+    {siteConfig.showSources && (
+      <aside class="sources" aria-labelledby="sources-heading">
+        <p class="eyebrow">Primary evidence</p>
+        <h2 id="sources-heading">Sources</h2>
+        <ol>
+          {article.data.sourceUrls.map((url) => (
+            <li><a href={url} rel="noopener noreferrer">{new URL(url).hostname}</a></li>
+          ))}
+        </ol>
+      </aside>
+    )}
+
+    <aside class="disclosure" aria-label="Editorial disclosure">
+      <strong>Editorial disclosure</strong>
+      <p>{siteConfig.aiDisclosure}</p>
+    </aside>
+  </article>
+</BaseLayout>

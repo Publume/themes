@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content'
+import ArticleCard from '../components/ArticleCard.astro'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { siteConfig } from '../lib/site'
+
+const articles = (await getCollection('articles')).sort(
+  (left, right) => right.data.publishedAt.getTime() - left.data.publishedAt.getTime(),
+)
+const [featured, ...remaining] = articles
+---
+
+<BaseLayout>
+  <section class="hero shell">
+    <p class="eyebrow">Independent editorial intelligence</p>
+    <h1>{siteConfig.tagline}</h1>
+    <p class="hero-copy">{siteConfig.description}</p>
+    {(siteConfig.newsletterUrl || siteConfig.sponsorUrl) && (
+      <div class="hero-actions">
+        {siteConfig.newsletterUrl && <a class="button primary" href={siteConfig.newsletterUrl}>Join the newsletter</a>}
+        {siteConfig.sponsorUrl && <a class="button secondary" href={siteConfig.sponsorUrl}>Sponsor this publication</a>}
+      </div>
+    )}
+  </section>
+
+  <section class="feed shell" aria-labelledby="latest-heading">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Curated and source-linked</p>
+        <h2 id="latest-heading">Latest reporting</h2>
+      </div>
+      <p>{articles.length} {articles.length === 1 ? 'article' : 'articles'}</p>
+    </div>
+
+    {featured ? (
+      <>
+        <ArticleCard article={featured} featured />
+        {remaining.length > 0 && (
+          <div class="article-grid">
+            {remaining.map((article) => <ArticleCard article={article} />)}
+          </div>
+        )}
+      </>
+    ) : (
+      <div class="empty-state">
+        <h2>No articles yet</h2>
+        <p>The publication is ready. New articles will appear after they pass the editorial gate.</p>
+      </div>
+    )}
+  </section>
+</BaseLayout>

@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out themes
+        uses: actions/checkout@v6
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+      - name: Install repository dependencies
+        run: bun install --frozen-lockfile
+      - name: Install editorial theme dependencies
+        run: bun install --frozen-lockfile --cwd themes/editorial
+      - name: Verify themes
+        run: bun run check
+      - name: Check out Publume Core
+        uses: actions/checkout@v6
+        with:
+          repository: Publume/core
+          path: .contract/core
+      - name: Install Core dependencies
+        run: bun install --frozen-lockfile --cwd .contract/core
+      - name: Run Core acceptance against this revision
+        working-directory: .contract/core
+        env:
+          PUBLUME_THEME_DIRECTORY: ${{ github.workspace }}
+        run: bun run acceptance

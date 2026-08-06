@@ -1,0 +1,32 @@
+{
+  "name": "@publume/themes",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Self-contained static site themes for Publume.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Publume/themes.git"
+  },
+  "type": "module",
+  "packageManager": "bun@1.3.14",
+  "engines": {
+    "bun": ">=1.3.0"
+  },
+  "scripts": {
+    "contract": "bun scripts/check-contract.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome lint .",
+    "format": "biome format --write . && bun run --cwd themes/editorial format",
+    "format:check": "biome format .",
+    "quality": "biome check .",
+    "check:editorial": "bun run --cwd themes/editorial check",
+    "check": "bun run quality && bun run typecheck && bun run contract && bun run check:editorial"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.7",
+    "@types/bun": "latest",
+    "typescript": "^5.9.0",
+    "zod": "^4.0.0"
+  }
+}
