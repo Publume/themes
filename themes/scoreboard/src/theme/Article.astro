@@ -1,0 +1,9 @@
+---
+import type { Article } from '../lib/articles'
+import { formatDate, languageHomePath, siteConfig, ui } from '../lib/site'
+
+type Props = { article: Article }
+const { article } = Astro.props
+---
+
+<article class="article shell"><a class="back-link" href={languageHomePath(article.data.language)}>← {ui.backToHome}</a><header class="article-header"><div class="article-rank" aria-hidden="true">01</div><div><p class="score-label">{ui.published} · {ui.live}</p><div class="article-meta"><time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt, article.data.language)}</time>{siteConfig.showScore && article.data.score !== undefined && <span>{ui.relevance} {Math.round(article.data.score * 100)}</span>}</div><h1>{article.data.title}</h1><p class="article-summary">{article.data.summary}</p>{siteConfig.showTopics && article.data.topics.length > 0 && <ul class="topic-list" aria-label={ui.topics}>{article.data.topics.map((topic) => <li>{topic}</li>)}</ul>}</div></header><div class="article-layout"><div class="article-body"><slot /></div><aside class="evidence-rail">{siteConfig.showSources && <div class="sources" aria-labelledby="sources-heading"><p class="score-label">{ui.sources}</p><h2 id="sources-heading">{ui.sources}</h2><ol>{article.data.sourceUrls.map((url, index) => <li><span>{String(index + 1).padStart(2, '0')}</span><a href={url} rel="noopener noreferrer">{new URL(url).hostname}</a></li>)}</ol></div>}<div class="disclosure" aria-label={ui.disclosure}><p class="score-label">{ui.disclosure}</p><p>{siteConfig.aiDisclosure}</p></div></aside></div></article>

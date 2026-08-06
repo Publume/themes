@@ -1,0 +1,12 @@
+---
+import type { Article } from '../lib/articles'
+import { articlePath, formatDate, siteConfig, ui } from '../lib/site'
+
+type Props = { articles: readonly Article[]; contentLanguage: string }
+const { articles, contentLanguage } = Astro.props
+const sourceCount = new Set(articles.flatMap((article) => article.data.sourceUrls.map((url) => new URL(url).hostname)))
+  .size
+---
+
+<section class="score-hero"><div class="shell hero-grid"><div class="hero-copy"><p class="score-label">{ui.latest} · {ui.live}</p><h1>{siteConfig.tagline}</h1><p>{siteConfig.description}</p>{(siteConfig.newsletterUrl || siteConfig.sponsorUrl) && <div class="hero-actions">{siteConfig.newsletterUrl && <a class="button primary" href={siteConfig.newsletterUrl}>{ui.newsletter}</a>}{siteConfig.sponsorUrl && <a class="button" href={siteConfig.sponsorUrl}>{ui.sponsor}</a>}</div>}</div><div class="score-panel" aria-label={ui.latest}><div><span>{ui.published}</span><strong>{String(articles.length).padStart(2, '0')}</strong></div><div><span>{ui.sources}</span><strong>{String(sourceCount).padStart(2, '0')}</strong></div><p><i aria-hidden="true"></i>{ui.monitoring}</p></div></div></section>
+<section class="score-feed shell" aria-labelledby="latest-heading"><div class="section-heading"><p class="score-label">{ui.published}</p><h2 id="latest-heading">{ui.latest}</h2><span>{ui.mode}: {ui.live}</span></div>{articles.length > 0 ? <ol class="score-list">{articles.map((article, index) => <li><article class:list={['score-card', { featured: index === 0 }]}><div class="rank">{String(index + 1).padStart(2, '0')}</div><div class="card-main"><div class="article-meta"><time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt, contentLanguage)}</time>{siteConfig.showScore && article.data.score !== undefined && <span>{ui.relevance} {Math.round(article.data.score * 100)}</span>}</div><h2><a href={articlePath(article.id, contentLanguage)}>{article.data.title}</a></h2><p>{article.data.summary}</p></div><div class="card-side">{siteConfig.showTopics && article.data.topics.length > 0 && <ul class="topic-list" aria-label={ui.topics}>{article.data.topics.map((topic) => <li>{topic}</li>)}</ul>}<a class="read-link" href={articlePath(article.id, contentLanguage)}>{ui.readArticle} <span aria-hidden="true">→</span></a></div></article></li>)}</ol> : <div class="empty-state"><span>00</span><h2>{ui.emptyTitle}</h2><p>{ui.emptyDescription}</p></div>}</section>

@@ -44,6 +44,14 @@
 @layer base {
   :root {
     color-scheme: light;
+    --primary: #a3442d;
+    --accent: #2f5d50;
+    --background: #f2eadb;
+    --surface: #fffaf0;
+    --text: #2c2a26;
+    --muted: #756d62;
+    --content-width: 1240px;
+    --card-radius: 4px;
     font-family: var(--font-ui);
     font-synthesis: none;
     text-rendering: optimizeLegibility;

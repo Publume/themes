@@ -1,0 +1,35 @@
+---
+import LanguageSwitcher from '../components/LanguageSwitcher.astro'
+import { languageHomePath, languageRssPath, siteConfig, ui } from '../lib/site'
+
+type Props = { contentLanguage: string }
+const { contentLanguage } = Astro.props
+---
+
+<div class="terminal-status">
+  <div class="shell status-inner">
+    <span><i aria-hidden="true"></i>{ui.live}</span>
+    <span>{ui.monitoring} / {ui.sources}</span>
+  </div>
+</div>
+<header class="site-header">
+  <div class="shell header-inner">
+    <a class="brand" href={languageHomePath(contentLanguage)} aria-label={`${siteConfig.name} · ${ui.home}`}>
+      <span class="prompt" aria-hidden="true">&gt;_</span><span>{siteConfig.name}</span>
+    </a>
+    <nav aria-label={ui.primaryNavigation}>
+      <a href={languageHomePath(contentLanguage)}>{ui.latest}</a>
+      <a href={languageRssPath(contentLanguage)}>{ui.rss}</a>
+      {siteConfig.contactUrl && <a href={siteConfig.contactUrl}>{ui.contact}</a>}
+    </nav>
+    <LanguageSwitcher contentLanguage={contentLanguage} />
+  </div>
+</header>
+<main id="main-content"><slot /></main>
+<footer class="site-footer">
+  <div class="shell footer-grid">
+    <div><span class="prompt" aria-hidden="true">//</span><strong>{siteConfig.name}</strong></div>
+    <p>{siteConfig.aiDisclosure}</p>
+    <p>{siteConfig.footerText}</p>
+  </div>
+</footer>

@@ -26,8 +26,8 @@ only `Shell.astro`, `Home.astro`, `Article.astro`, and `theme.css` under
 Core owns two paths in the target site:
 
 - `src/data/site-config.generated.json` contains validated site identity,
-  presentation tokens, interface locale, output languages, default content
-  language, disclosure text, and optional commercial links.
+  interface locale, output languages, default content language, display
+  choices, disclosure text, and optional commercial links.
 - `src/content/articles/<language>/<slug>.md` contains validated article
   frontmatter and Markdown body content.
 
@@ -73,6 +73,8 @@ Core owns collection, filtering, AI gating, article generation, generated
 configuration, content identity, and Git publication. Themes owns the shared
 rendering runtime, the single interface translation catalog, navigation,
 accessibility, metadata, feeds, visual overlays, static build, and deployment.
+Each overlay defines its colors, content width, and component geometry directly
+in `theme.css`; generated site configuration cannot override those styles.
 
 The selected interface locale controls navigation, headings, buttons, empty
 states, source and disclosure labels, accessibility copy, localized defaults,

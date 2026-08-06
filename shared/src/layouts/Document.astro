@@ -43,26 +43,15 @@ const structuredData = {
   citation: sources.length > 0 ? sources : undefined,
 }
 const jsonLd = JSON.stringify(structuredData).replace(/</g, '\\u003c')
-const style = [
-  `--primary:${siteConfig.primaryColor}`,
-  `--accent:${siteConfig.accentColor}`,
-  `--background:${siteConfig.backgroundColor}`,
-  `--surface:${siteConfig.surfaceColor}`,
-  `--text:${siteConfig.textColor}`,
-  `--muted:${siteConfig.mutedColor}`,
-  `--content-width:${siteConfig.maxWidth}`,
-  `--card-radius:${siteConfig.cardRadius}`,
-].join(';')
 ---
 
 <!doctype html>
-<html lang={siteConfig.locale} dir={textDirection(siteConfig.locale)} data-theme={siteConfig.theme} style={style}>
+<html lang={siteConfig.locale} dir={textDirection(siteConfig.locale)}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <meta name="theme-color" content={siteConfig.primaryColor} />
     <title>{documentTitle}</title>
     {canonical && <link rel="canonical" href={canonical} />}
     {alternates.map((alternate) => <link rel="alternate" hreflang={alternate.language} href={alternate.href} />)}

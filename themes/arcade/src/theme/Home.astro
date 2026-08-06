@@ -1,0 +1,12 @@
+---
+import type { Article } from '../lib/articles'
+import { articlePath, formatDate, siteConfig, ui } from '../lib/site'
+
+type Props = { articles: readonly Article[]; contentLanguage: string }
+const { articles, contentLanguage } = Astro.props
+const sourceCount = new Set(articles.flatMap((article) => article.data.sourceUrls.map((url) => new URL(url).hostname)))
+  .size
+---
+
+<section class="arcade-hero shell"><div class="hero-copy"><p class="arcade-label">{ui.live} / {ui.latest}</p><h1>{siteConfig.tagline}</h1><p>{siteConfig.description}</p>{(siteConfig.newsletterUrl || siteConfig.sponsorUrl) && <div class="hero-actions">{siteConfig.newsletterUrl && <a class="button primary" href={siteConfig.newsletterUrl}>{ui.newsletter}</a>}{siteConfig.sponsorUrl && <a class="button" href={siteConfig.sponsorUrl}>{ui.sponsor}</a>}</div>}</div><div class="player-panel"><div class="pixel-art" aria-hidden="true"><span></span><span></span><span></span></div><dl><div><dt>{ui.published}</dt><dd>{String(articles.length).padStart(2, '0')}</dd></div><div><dt>{ui.sources}</dt><dd>{String(sourceCount).padStart(2, '0')}</dd></div></dl></div></section>
+<section class="arcade-feed shell" aria-labelledby="latest-heading"><div class="section-heading"><p class="arcade-label">{ui.published}</p><h2 id="latest-heading">{ui.latest}</h2><span>{ui.mode}: {ui.live}</span></div>{articles.length > 0 ? <div class="arcade-grid">{articles.map((article, index) => <article class:list={['game-card', { featured: index === 0 }]}><div class="game-head"><span>{String(index + 1).padStart(2, '0')}</span><time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt, contentLanguage)}</time></div><h2><a href={articlePath(article.id, contentLanguage)}>{article.data.title}</a></h2><p>{article.data.summary}</p>{siteConfig.showTopics && article.data.topics.length > 0 && <ul class="topic-list" aria-label={ui.topics}>{article.data.topics.map((topic) => <li>{topic}</li>)}</ul>}<div class="game-footer">{siteConfig.showScore && article.data.score !== undefined && <span>{ui.relevance} {Math.round(article.data.score * 100)}</span>}<a class="read-link" href={articlePath(article.id, contentLanguage)}>{ui.readArticle} <span aria-hidden="true">▶</span></a></div></article>)}</div> : <div class="empty-state"><span class="arcade-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><h2>{ui.emptyTitle}</h2><p>{ui.emptyDescription}</p></div>}</section>

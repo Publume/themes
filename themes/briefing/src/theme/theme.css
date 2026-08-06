@@ -31,6 +31,14 @@
 @layer base {
   :root {
     color-scheme: dark;
+    --primary: #b7f34a;
+    --accent: #37d6c0;
+    --background: #07100e;
+    --surface: #0d1916;
+    --text: #ecf6f1;
+    --muted: #8da59c;
+    --content-width: 1240px;
+    --card-radius: 12px;
     font-family: var(--font-ui);
     font-synthesis: none;
     text-rendering: optimizeLegibility;

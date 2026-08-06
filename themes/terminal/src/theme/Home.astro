@@ -1,0 +1,51 @@
+---
+import type { Article } from '../lib/articles'
+import { articlePath, formatDate, siteConfig, ui } from '../lib/site'
+
+type Props = { articles: readonly Article[]; contentLanguage: string }
+const { articles, contentLanguage } = Astro.props
+const sourceCount = new Set(articles.flatMap((article) => article.data.sourceUrls.map((url) => new URL(url).hostname)))
+  .size
+---
+
+<section class="terminal-hero shell">
+  <div class="hero-copy">
+    <p class="command">~/publume/{contentLanguage} $ {ui.monitoring}</p>
+    <h1>{siteConfig.tagline}<span class="cursor" aria-hidden="true"></span></h1>
+    <p class="hero-description">{siteConfig.description}</p>
+    {(siteConfig.newsletterUrl || siteConfig.sponsorUrl) && <div class="hero-actions">
+      {siteConfig.newsletterUrl && <a class="button primary" href={siteConfig.newsletterUrl}>{ui.newsletter}</a>}
+      {siteConfig.sponsorUrl && <a class="button" href={siteConfig.sponsorUrl}>{ui.sponsor}</a>}
+    </div>}
+  </div>
+  <dl class="terminal-metrics" aria-label={ui.latest}>
+    <div><dt>{ui.published}</dt><dd>{String(articles.length).padStart(3, '0')}</dd></div>
+    <div><dt>{ui.sources}</dt><dd>{String(sourceCount).padStart(3, '0')}</dd></div>
+    <div><dt>{ui.mode}</dt><dd>{ui.live}</dd></div>
+  </dl>
+</section>
+<section class="terminal-feed shell" aria-labelledby="latest-heading">
+  <div class="feed-heading">
+    <p><span aria-hidden="true">+</span> {ui.published}</p>
+    <h2 id="latest-heading">{ui.latest}</h2>
+  </div>
+  {articles.length > 0 ? <ol class="process-list">
+    {articles.map((article, index) => <li>
+      <article class="process-card">
+        <div class="process-id" aria-hidden="true">{String(index + 1).padStart(3, '0')}</div>
+        <div class="process-content">
+          <div class="article-meta">
+            <time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt, contentLanguage)}</time>
+            {siteConfig.showScore && article.data.score !== undefined && <span>{ui.relevance} {Math.round(article.data.score * 100)}</span>}
+          </div>
+          <h2><a href={articlePath(article.id, contentLanguage)}>{article.data.title}</a></h2>
+          <p>{article.data.summary}</p>
+          <div class="process-footer">
+            {siteConfig.showTopics && article.data.topics.length > 0 && <ul class="topic-list" aria-label={ui.topics}>{article.data.topics.map((topic) => <li>{topic}</li>)}</ul>}
+            <a class="read-link" href={articlePath(article.id, contentLanguage)}>{ui.readArticle} <span aria-hidden="true">↵</span></a>
+          </div>
+        </div>
+      </article>
+    </li>)}
+  </ol> : <div class="empty-state"><span aria-hidden="true">[ ]</span><h2>{ui.emptyTitle}</h2><p>{ui.emptyDescription}</p></div>}
+</section>

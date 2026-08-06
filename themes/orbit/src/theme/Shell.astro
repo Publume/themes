@@ -1,0 +1,11 @@
+---
+import LanguageSwitcher from '../components/LanguageSwitcher.astro'
+import { languageHomePath, languageRssPath, siteConfig, ui } from '../lib/site'
+
+type Props = { contentLanguage: string }
+const { contentLanguage } = Astro.props
+---
+
+<header class="site-header"><div class="shell header-inner"><a class="brand" href={languageHomePath(contentLanguage)} aria-label={`${siteConfig.name} · ${ui.home}`}><span class="orbit-mark" aria-hidden="true"><i></i></span><span>{siteConfig.name}</span></a><nav aria-label={ui.primaryNavigation}><a href={languageHomePath(contentLanguage)}>{ui.latest}</a><a href={languageRssPath(contentLanguage)}>{ui.rss}</a>{siteConfig.contactUrl && <a href={siteConfig.contactUrl}>{ui.contact}</a>}</nav><LanguageSwitcher contentLanguage={contentLanguage} /></div></header>
+<main id="main-content"><slot /></main>
+<footer class="site-footer"><div class="shell footer-grid"><div><span class="orbit-mark small" aria-hidden="true"><i></i></span><strong>{siteConfig.name}</strong></div><div><p class="orbit-label">{ui.disclosure}</p><p>{siteConfig.aiDisclosure}</p></div><p>{siteConfig.footerText}</p></div></footer>

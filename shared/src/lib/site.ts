@@ -3,7 +3,6 @@ import rawConfig from '../data/site-config.generated.json'
 import { messagesFor, type SiteLocale } from '../i18n/messages'
 
 const optionalUrl = z.union([z.literal(''), z.url()])
-const color = z.string().regex(/^#[0-9a-fA-F]{6}$/)
 const language = z.string().min(2).max(35)
 
 const siteConfigSchema = z
@@ -22,15 +21,6 @@ const siteConfigSchema = z
     socialImageUrl: optionalUrl,
     newsletterUrl: optionalUrl,
     sponsorUrl: optionalUrl,
-    theme: z.string().regex(/^[a-z0-9][a-z0-9_-]{0,63}$/),
-    primaryColor: color,
-    accentColor: color,
-    backgroundColor: color,
-    surfaceColor: color,
-    textColor: color,
-    mutedColor: color,
-    maxWidth: z.string().regex(/^\d{3,4}px$/),
-    cardRadius: z.string().regex(/^\d{1,3}px$/),
     showTopics: z.boolean(),
     showScore: z.boolean(),
     showSources: z.boolean(),

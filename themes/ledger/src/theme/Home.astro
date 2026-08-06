@@ -1,0 +1,28 @@
+---
+import type { Article } from '../lib/articles'
+import { articlePath, formatDate, siteConfig, ui } from '../lib/site'
+
+type Props = { articles: readonly Article[]; contentLanguage: string }
+const { articles, contentLanguage } = Astro.props
+const [lead, ...remaining] = articles
+const sourceCount = new Set(articles.flatMap((article) => article.data.sourceUrls.map((url) => new URL(url).hostname)))
+  .size
+---
+
+<section class="ledger-hero shell">
+  <div class="hero-number" aria-hidden="true">{String(articles.length).padStart(2, '0')}</div>
+  <div class="hero-title"><p class="label">{ui.latest} / {ui.published}</p><h1>{siteConfig.tagline}</h1></div>
+  <div class="hero-copy"><p>{siteConfig.description}</p><dl><div><dt>{ui.sources}</dt><dd>{sourceCount}</dd></div><div><dt>{ui.mode}</dt><dd>{ui.live}</dd></div></dl></div>
+</section>
+<section class="ledger-feed shell" aria-labelledby="latest-heading">
+  <div class="ledger-heading"><p class="label">{ui.published}</p><h2 id="latest-heading">{ui.latest}</h2><span>{String(articles.length).padStart(2, '0')}</span></div>
+  {lead ? <>
+    <article class="ledger-lead">
+      <div class="lead-index"><span>01</span><time datetime={lead.data.publishedAt.toISOString()}>{formatDate(lead.data.publishedAt, contentLanguage)}</time></div>
+      <div class="lead-title"><h2><a href={articlePath(lead.id, contentLanguage)}>{lead.data.title}</a></h2>{siteConfig.showTopics && lead.data.topics.length > 0 && <ul class="topic-list" aria-label={ui.topics}>{lead.data.topics.map((topic) => <li>{topic}</li>)}</ul>}</div>
+      <div class="lead-summary"><p>{lead.data.summary}</p>{siteConfig.showScore && lead.data.score !== undefined && <p class="score">{ui.relevance} {Math.round(lead.data.score * 100)}</p>}<a class="read-link" href={articlePath(lead.id, contentLanguage)}>{ui.readArticle} <span aria-hidden="true">↗</span></a></div>
+    </article>
+    {remaining.length > 0 && <ol class="ledger-list">{remaining.map((article, index) => <li><article class="ledger-row"><div class="row-index">{String(index + 2).padStart(2, '0')}</div><time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt, contentLanguage)}</time><div><h2><a href={articlePath(article.id, contentLanguage)}>{article.data.title}</a></h2><p>{article.data.summary}</p></div><a class="row-link" href={articlePath(article.id, contentLanguage)} aria-label={`${ui.readArticle}: ${article.data.title}`}>↗</a></article></li>)}</ol>}
+  </> : <div class="empty-state"><span>00</span><h2>{ui.emptyTitle}</h2><p>{ui.emptyDescription}</p></div>}
+</section>
+{(siteConfig.newsletterUrl || siteConfig.sponsorUrl) && <aside class="shell ledger-actions"><p class="label">{ui.latest}</p><div>{siteConfig.newsletterUrl && <a href={siteConfig.newsletterUrl}>{ui.newsletter} <span>↗</span></a>}{siteConfig.sponsorUrl && <a href={siteConfig.sponsorUrl}>{ui.sponsor} <span>↗</span></a>}</div></aside>}

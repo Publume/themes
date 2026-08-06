@@ -30,6 +30,14 @@
 @layer base {
   :root {
     color-scheme: light;
+    --primary: #2563eb;
+    --accent: #0891b2;
+    --background: #ffffff;
+    --surface: #f8fafc;
+    --text: #0f172a;
+    --muted: #64748b;
+    --content-width: 1180px;
+    --card-radius: 16px;
     --font-body: var(--font-sans);
     --font-display: var(--font-sans);
     font-family: var(--font-ui);
