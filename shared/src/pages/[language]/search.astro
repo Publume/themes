@@ -1,0 +1,22 @@
+---
+import SearchPage from '../../components/SearchPage.astro'
+import Document from '../../layouts/Document.astro'
+import { languageSearchPath, siteConfig, ui } from '../../lib/site'
+
+export function getStaticPaths() {
+  return siteConfig.outputLanguages
+    .filter((language) => language !== siteConfig.defaultContentLanguage)
+    .map((language) => ({ params: { language }, props: { contentLanguage: language } }))
+}
+
+type Props = { contentLanguage: string }
+const { contentLanguage } = Astro.props
+const alternates = siteConfig.outputLanguages.map((language) => ({
+  language,
+  href: new URL(languageSearchPath(language), Astro.site ?? 'https://example.invalid/').href,
+}))
+---
+
+<Document title={ui.search} description={ui.searchDescription} contentLanguage={contentLanguage} alternates={alternates}>
+  <SearchPage contentLanguage={contentLanguage} />
+</Document>

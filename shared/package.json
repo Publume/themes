@@ -12,7 +12,7 @@
   "scripts": {
     "fonts": "bun scripts/generate-fonts.ts",
     "dev": "bun run fonts && astro dev",
-    "build": "bun run fonts && astro build",
+    "build": "bun run fonts && astro build && pagefind --site dist",
     "preview": "astro preview",
     "typecheck": "bun run fonts && astro check",
     "quality": "biome check .",
@@ -44,6 +44,7 @@
   "devDependencies": {
     "@astrojs/check": "0.9.10",
     "@biomejs/biome": "2.5.7",
+    "pagefind": "1.5.2",
     "typescript": "^5.9.0"
   }
 }

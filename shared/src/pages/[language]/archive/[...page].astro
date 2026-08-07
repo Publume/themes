@@ -1,0 +1,43 @@
+---
+import { getCollection } from 'astro:content'
+import ArchivePage from '../../../components/ArchivePage.astro'
+import Document from '../../../layouts/Document.astro'
+import { archivePageSize, articlesForLanguage } from '../../../lib/articles'
+import { languageArchivePath, siteConfig, textDirection, ui } from '../../../lib/site'
+
+export async function getStaticPaths() {
+  const allArticles = await getCollection('articles')
+  return siteConfig.outputLanguages
+    .filter((language) => language !== siteConfig.defaultContentLanguage)
+    .flatMap((contentLanguage) => {
+      const articles = articlesForLanguage(allArticles, contentLanguage)
+      const pageCount = Math.max(1, Math.ceil(articles.length / archivePageSize))
+      return Array.from({ length: pageCount }, (_, index) => ({
+        params: { language: contentLanguage, page: index === 0 ? undefined : `page/${index + 1}` },
+        props: { allArticles, articles, contentLanguage, page: index + 1, pageCount },
+      }))
+    })
+}
+
+type Props = {
+  allArticles: Awaited<ReturnType<typeof getCollection<'articles'>>>
+  articles: Awaited<ReturnType<typeof getCollection<'articles'>>>
+  contentLanguage: string
+  page: number
+  pageCount: number
+}
+const { allArticles, articles, contentLanguage, page, pageCount } = Astro.props
+const pageArticles = articles.slice((page - 1) * archivePageSize, page * archivePageSize)
+const alternates = siteConfig.outputLanguages.flatMap((language) => {
+  const pages = Math.max(1, Math.ceil(articlesForLanguage(allArticles, language).length / archivePageSize))
+  return page <= pages
+    ? [{ language, href: new URL(languageArchivePath(language, page), Astro.site ?? 'https://example.invalid/').href }]
+    : []
+})
+---
+
+<Document title={page === 1 ? ui.archive : `${ui.archive} · ${ui.page} ${page}`} contentLanguage={contentLanguage} alternates={alternates}>
+  <div lang={contentLanguage} dir={textDirection(contentLanguage)}>
+    <ArchivePage articles={pageArticles} contentLanguage={contentLanguage} page={page} pageCount={pageCount} total={articles.length} />
+  </div>
+</Document>

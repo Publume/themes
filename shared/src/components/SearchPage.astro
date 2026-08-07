@@ -1,0 +1,24 @@
+---
+import { sitePath, textDirection, ui } from '../lib/site'
+
+type Props = { contentLanguage: string }
+const { contentLanguage } = Astro.props
+const bundlePath = sitePath('/pagefind/')
+const uiScriptPath = sitePath('/pagefind/pagefind-ui.js')
+const uiStylePath = sitePath('/pagefind/pagefind-ui.css')
+---
+
+<section class="shell publume-page" lang={contentLanguage} dir={textDirection(contentLanguage)} data-pagefind-ignore>
+  <header class="publume-page-header"><h1>{ui.search}</h1><p>{ui.searchDescription}</p></header>
+  <link href={uiStylePath} rel="stylesheet" />
+  <div id="publume-search" class="publume-search-results"></div>
+  <script src={uiScriptPath} is:inline></script>
+  <script is:inline define:vars={{ bundlePath }}>
+    new window.PagefindUI({
+      element: '#publume-search',
+      bundlePath,
+      showImages: false,
+      showSubResults: true,
+    })
+  </script>
+</section>

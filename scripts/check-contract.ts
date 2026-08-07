@@ -16,7 +16,13 @@ const requiredSharedPaths = [
   'src/data/site-config.generated.json',
   'src/i18n/messages.ts',
   'src/layouts/Document.astro',
+  'src/pages/404.astro',
+  'src/pages/about.astro',
+  'src/pages/archive/[...page].astro',
   'src/pages/index.astro',
+  'src/pages/robots.txt.ts',
+  'src/pages/search.astro',
+  'src/pages/topics/[...topic].astro',
   'src/styles/typography.css',
 ] as const
 const requiredThemePaths = [

@@ -31,7 +31,7 @@ const alternates = alternativesForArticle(article, allArticles).map((alternative
   sources={article.data.sourceUrls}
   alternates={alternates}
 >
-  <div lang={article.data.language} dir={textDirection(article.data.language)}>
+  <div lang={article.data.language} dir={textDirection(article.data.language)} data-pagefind-body>
     <Article article={article}><Content /></Article>
   </div>
 </Document>

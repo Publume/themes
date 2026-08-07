@@ -1,0 +1,30 @@
+---
+import type { Article } from '../lib/articles'
+import { languageArchivePath, siteConfig, ui } from '../lib/site'
+import ArticleList from './ArticleList.astro'
+
+type Props = {
+  articles: readonly Article[]
+  contentLanguage: string
+  page: number
+  pageCount: number
+  total: number
+}
+const { articles, contentLanguage, page, pageCount, total } = Astro.props
+---
+
+<section class="shell publume-page" data-pagefind-ignore>
+  <header class="publume-page-header">
+    <p>{ui.articleCount.replace('{count}', new Intl.NumberFormat(contentLanguage).format(total))}</p>
+    <h1>{ui.archive}</h1>
+    <p>{siteConfig.description}</p>
+  </header>
+  <ArticleList articles={articles} contentLanguage={contentLanguage} />
+  {pageCount > 1 && (
+    <nav class="publume-pagination" aria-label={ui.archive}>
+      {page > 1 ? <a href={languageArchivePath(contentLanguage, page - 1)}>← {ui.previousPage}</a> : <span />}
+      <span>{ui.page} {page} / {pageCount}</span>
+      {page < pageCount ? <a href={languageArchivePath(contentLanguage, page + 1)}>{ui.nextPage} →</a> : <span />}
+    </nav>
+  )}
+</section>

@@ -1,0 +1,25 @@
+---
+import type { Article } from '../lib/articles'
+import { topicsForArticle } from '../lib/articles'
+import { articlePath, formatDate, languageTopicsPath, siteConfig, ui } from '../lib/site'
+
+type Props = { articles: readonly Article[]; contentLanguage: string }
+const { articles, contentLanguage } = Astro.props
+---
+
+<div class="publume-article-list">
+  {articles.map((article) => (
+    <article class="publume-article-card">
+      <time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt, contentLanguage)}</time>
+      <h2><a href={articlePath(article.id, contentLanguage)}>{article.data.title}</a></h2>
+      <p>{article.data.summary}</p>
+      {siteConfig.showTopics && article.data.topics.length > 0 && (
+        <ul class="publume-topic-links" aria-label={ui.topics}>
+          {topicsForArticle(article).map((topic) => (
+            <li><a href={languageTopicsPath(contentLanguage, topic.id)}>{topic.label}</a></li>
+          ))}
+        </ul>
+      )}
+    </article>
+  ))}
+</div>

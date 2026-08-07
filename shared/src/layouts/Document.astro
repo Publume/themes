@@ -15,6 +15,7 @@ type Props = {
   publishedAt?: Date
   sources?: readonly string[]
   alternates?: readonly Alternate[]
+  noindex?: boolean
 }
 
 const {
@@ -25,9 +26,10 @@ const {
   publishedAt,
   sources = [],
   alternates = [],
+  noindex = false,
 } = Astro.props
 const documentTitle = title === siteConfig.name ? title : `${title} | ${siteConfig.name}`
-const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined
+const canonical = !noindex && Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined
 const defaultAlternate = alternates.find((alternate) => alternate.language === siteConfig.defaultContentLanguage)
 const structuredData = {
   '@context': 'https://schema.org',
@@ -46,12 +48,13 @@ const jsonLd = JSON.stringify(structuredData).replace(/</g, '\\u003c')
 ---
 
 <!doctype html>
-<html lang={siteConfig.locale} dir={textDirection(siteConfig.locale)}>
+<html lang={contentLanguage} dir={textDirection(contentLanguage)}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
     <title>{documentTitle}</title>
     {canonical && <link rel="canonical" href={canonical} />}
     {alternates.map((alternate) => <link rel="alternate" hreflang={alternate.language} href={alternate.href} />)}

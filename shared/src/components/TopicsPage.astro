@@ -1,0 +1,32 @@
+---
+import type { TopicGroup } from '../lib/articles'
+import { languageTopicsPath, ui } from '../lib/site'
+import ArticleList from './ArticleList.astro'
+
+type Props = { groups: readonly TopicGroup[]; contentLanguage: string; selected?: TopicGroup }
+const { groups, contentLanguage, selected } = Astro.props
+---
+
+<section class="shell publume-page" data-pagefind-ignore>
+  <header class="publume-page-header">
+    {selected && <a class="publume-back-link" href={languageTopicsPath(contentLanguage)}>← {ui.topics}</a>}
+    <h1>{selected?.topic.label ?? ui.topics}</h1>
+    <p>{selected ? ui.articleCount.replace('{count}', new Intl.NumberFormat(contentLanguage).format(selected.articles.length)) : ui.sourceTransparency}</p>
+  </header>
+  {selected ? (
+    <ArticleList articles={selected.articles} contentLanguage={contentLanguage} />
+  ) : groups.length > 0 ? (
+    <ul class="publume-topic-directory">
+      {groups.map((group) => (
+        <li>
+          <a href={languageTopicsPath(contentLanguage, group.topic.id)}>
+            <strong>{group.topic.label}</strong>
+            <span>{ui.articleCount.replace('{count}', new Intl.NumberFormat(contentLanguage).format(group.articles.length))}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p class="publume-empty">{ui.noTopics}</p>
+  )}
+</section>

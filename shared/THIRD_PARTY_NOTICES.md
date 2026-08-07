@@ -10,3 +10,11 @@ through Fontsource packages and are licensed under the SIL Open Font License
 - License included in deployed sites: `public/licenses/OFL-1.1.txt`
 
 The fonts are bundled with the generated website and are not sold separately.
+
+## Static search
+
+Publume sites use Pagefind to generate a browser-side static search index. Pagefind
+is licensed under the MIT License.
+
+- Pagefind: <https://pagefind.app/>
+- Source and license: <https://github.com/CloudCannon/pagefind>

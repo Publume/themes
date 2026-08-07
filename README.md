@@ -38,7 +38,7 @@ Contract 1 has two deliberately separate parts:
 
 - `shared/` owns Astro, routes, language separation, the single interface
   translation catalog, accessible semantic typography, self-hosted Noto fonts,
-  SEO, feeds, and GitHub Pages deployment;
+  archives, topics, static multilingual search, SEO, feeds, and GitHub Pages deployment;
 - `themes/<theme-id>/` owns only `Shell.astro`, `Home.astro`, `Article.astro`,
   `theme.css`, and the schema-version-1 marker. Its `theme.css` is the single
   owner of colors, content width, and component geometry.

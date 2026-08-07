@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content'
 import Document from '../layouts/Document.astro'
-import { articlesForLanguage } from '../lib/articles'
+import { articlesForLanguage, homeArticleLimit } from '../lib/articles'
 import { languageHomePath, siteConfig, textDirection } from '../lib/site'
 import Home from '../theme/Home.astro'
 
@@ -15,6 +15,6 @@ const alternates = siteConfig.outputLanguages.map((language) => ({
 
 <Document contentLanguage={contentLanguage} alternates={alternates}>
   <div lang={contentLanguage} dir={textDirection(contentLanguage)}>
-    <Home articles={articles} contentLanguage={contentLanguage} />
+    <Home articles={articles.slice(0, homeArticleLimit)} contentLanguage={contentLanguage} />
   </div>
 </Document>

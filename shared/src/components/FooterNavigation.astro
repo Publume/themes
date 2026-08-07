@@ -1,0 +1,12 @@
+---
+import { languageRssPath, siteConfig, sitePath, ui } from '../lib/site'
+
+type Props = { contentLanguage: string }
+const { contentLanguage } = Astro.props
+---
+
+<nav class="shell publume-footer-navigation" aria-label={`${siteConfig.name} · ${ui.about}`}>
+  <a href={sitePath('/about/')}>{ui.about}</a>
+  <a href={languageRssPath(contentLanguage)}>{ui.rss}</a>
+  {siteConfig.contactUrl && <a href={siteConfig.contactUrl} rel="me">{ui.contact}</a>}
+</nav>

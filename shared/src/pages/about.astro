@@ -1,0 +1,19 @@
+---
+import Document from '../layouts/Document.astro'
+import { siteConfig, textDirection, ui } from '../lib/site'
+
+const contentLanguage = siteConfig.locale
+---
+
+<Document title={ui.about} contentLanguage={contentLanguage}>
+  <section class="shell publume-page publume-about" lang={contentLanguage} dir={textDirection(contentLanguage)} data-pagefind-ignore>
+    <header class="publume-page-header"><h1>{ui.about}</h1><p>{siteConfig.description}</p></header>
+    <dl class="publume-facts">
+      <div><dt>{ui.publisher}</dt><dd>{siteConfig.publisherName}</dd></div>
+      <div><dt>{ui.author}</dt><dd>{siteConfig.authorName}</dd></div>
+      <div><dt>{ui.automation}</dt><dd>{siteConfig.aiDisclosure}</dd></div>
+      <div><dt>{ui.sources}</dt><dd>{ui.sourceTransparency}</dd></div>
+    </dl>
+    {siteConfig.contactUrl && <p class="publume-contact"><a href={siteConfig.contactUrl} rel="me">{ui.contact} →</a></p>}
+  </section>
+</Document>

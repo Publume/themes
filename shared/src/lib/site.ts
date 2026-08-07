@@ -69,6 +69,25 @@ export function languageRssPath(languageTag: string): string {
   return languageTag === siteConfig.defaultContentLanguage ? sitePath('/rss.xml') : sitePath(`/${languageTag}/rss.xml`)
 }
 
+function languageSectionPath(languageTag: string, section: string): string {
+  const prefix = languageTag === siteConfig.defaultContentLanguage ? '' : `/${languageTag}`
+  return sitePath(`${prefix}/${section}/`)
+}
+
+export function languageArchivePath(languageTag: string, page = 1): string {
+  const archive = languageSectionPath(languageTag, 'archive')
+  return page === 1 ? archive : `${archive}page/${page}/`
+}
+
+export function languageTopicsPath(languageTag: string, topicId?: string): string {
+  const topics = languageSectionPath(languageTag, 'topics')
+  return topicId ? `${topics}${topicId}/` : topics
+}
+
+export function languageSearchPath(languageTag: string): string {
+  return languageSectionPath(languageTag, 'search')
+}
+
 export function articleSlug(articleId: string): string {
   const separator = articleId.indexOf('/')
   return separator < 0 ? articleId : articleId.slice(separator + 1)

@@ -1,3 +1,5 @@
+import { type PageMessages, pageMessages } from './pages'
+
 export const supportedSiteLocales = [
   'zh-CN',
   'zh-TW',
@@ -23,7 +25,7 @@ export const supportedSiteLocales = [
 
 export type SiteLocale = (typeof supportedSiteLocales)[number]
 
-export type UiMessages = {
+type BaseMessages = {
   readonly defaultSiteName: string
   readonly defaultDescription: string
   readonly defaultTagline: string
@@ -51,6 +53,8 @@ export type UiMessages = {
   readonly newsletter: string
   readonly sponsor: string
 }
+
+export type UiMessages = BaseMessages & PageMessages
 
 export const messages = {
   'zh-CN': {
@@ -614,7 +618,7 @@ export const messages = {
     newsletter: 'Dapatkan kemas kini',
     sponsor: 'Sokong laman ini',
   },
-} as const satisfies Readonly<Record<SiteLocale, UiMessages>>
+} as const satisfies Readonly<Record<SiteLocale, BaseMessages>>
 
 function normalizedLocale(locale: string): SiteLocale | undefined {
   const exact = supportedSiteLocales.find((candidate) => candidate.toLowerCase() === locale.toLowerCase())
@@ -627,5 +631,5 @@ function normalizedLocale(locale: string): SiteLocale | undefined {
 export function messagesFor(locale: string): { readonly locale: SiteLocale; readonly messages: UiMessages } {
   const resolved = normalizedLocale(locale)
   if (!resolved) throw new Error(`Unsupported site interface locale: ${locale}`)
-  return { locale: resolved, messages: messages[resolved] }
+  return { locale: resolved, messages: { ...messages[resolved], ...pageMessages[resolved] } }
 }

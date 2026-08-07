@@ -1,0 +1,14 @@
+---
+import { siteConfig } from '../lib/site'
+
+type Props = { className?: string }
+const { className } = Astro.props
+const brand = 'Publume'
+const brandIndex = siteConfig.footerText.indexOf(brand)
+const beforeBrand = brandIndex < 0 ? siteConfig.footerText : siteConfig.footerText.slice(0, brandIndex)
+const afterBrand = brandIndex < 0 ? '' : siteConfig.footerText.slice(brandIndex + brand.length)
+---
+
+<p class={className}>
+  {beforeBrand}{brandIndex >= 0 && <a href="https://github.com/Publume">{brand}</a>}{afterBrand}
+</p>

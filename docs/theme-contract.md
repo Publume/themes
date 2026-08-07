@@ -72,7 +72,8 @@ Pages, and skip Pages configuration and deployment for private repositories.
 Core owns collection, filtering, AI gating, article generation, generated
 configuration, content identity, and Git publication. Themes owns the shared
 rendering runtime, the single interface translation catalog, navigation,
-accessibility, metadata, feeds, visual overlays, static build, and deployment.
+accessibility, metadata, feeds, archive, topic, search, about, error and
+machine-readable routes, visual overlays, static build, and deployment.
 Each overlay defines its colors, content width, and component geometry directly
 in `theme.css`; generated site configuration cannot override those styles.
 
@@ -82,6 +83,13 @@ and footer copy. Output languages control content routes. The default content
 language is listed at `/`; every additional language receives its own
 `/<language>/` index. Article routes remain language-scoped, so languages are
 never mixed in a single listing.
+
+Every composed site provides the same reader-facing route capabilities: a latest
+index, article pages, paginated archives, topic indexes and topic pages, static
+multilingual search, an about page, a 404 page, RSS, sitemap output, and
+`robots.txt`. The homepage receives only the latest twelve articles; the archive
+owns complete historical browsing. Visual overlays may change how these routes
+look, but must not remove or rename them.
 
 Themes must not require Core credentials at build time. They must not fetch AI
 output, mutate source content, or run a persistent backend.

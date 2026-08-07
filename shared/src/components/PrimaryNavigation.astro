@@ -1,0 +1,13 @@
+---
+import { languageArchivePath, languageHomePath, languageSearchPath, languageTopicsPath, ui } from '../lib/site'
+
+type Props = { contentLanguage: string }
+const { contentLanguage } = Astro.props
+---
+
+<nav class="publume-primary-navigation" aria-label={ui.primaryNavigation}>
+  <a href={languageHomePath(contentLanguage)}>{ui.latest}</a>
+  <a href={languageTopicsPath(contentLanguage)}>{ui.topics}</a>
+  <a href={languageArchivePath(contentLanguage)}>{ui.archive}</a>
+  <a href={languageSearchPath(contentLanguage)}>{ui.search}</a>
+</nav>

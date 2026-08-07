@@ -1,6 +1,9 @@
 ---
+import FooterAttribution from '../components/FooterAttribution.astro'
+import FooterNavigation from '../components/FooterNavigation.astro'
 import LanguageSwitcher from '../components/LanguageSwitcher.astro'
-import { languageHomePath, languageRssPath, siteConfig, ui } from '../lib/site'
+import PrimaryNavigation from '../components/PrimaryNavigation.astro'
+import { languageHomePath, siteConfig, ui } from '../lib/site'
 
 type Props = { contentLanguage: string }
 const { contentLanguage } = Astro.props
@@ -17,11 +20,7 @@ const { contentLanguage } = Astro.props
     <a class="brand" href={languageHomePath(contentLanguage)} aria-label={`${siteConfig.name} · ${ui.home}`}>
       <span class="prompt" aria-hidden="true">&gt;_</span><span>{siteConfig.name}</span>
     </a>
-    <nav aria-label={ui.primaryNavigation}>
-      <a href={languageHomePath(contentLanguage)}>{ui.latest}</a>
-      <a href={languageRssPath(contentLanguage)}>{ui.rss}</a>
-      {siteConfig.contactUrl && <a href={siteConfig.contactUrl}>{ui.contact}</a>}
-    </nav>
+    <PrimaryNavigation contentLanguage={contentLanguage} />
     <LanguageSwitcher contentLanguage={contentLanguage} />
   </div>
 </header>
@@ -30,6 +29,7 @@ const { contentLanguage } = Astro.props
   <div class="shell footer-grid">
     <div><span class="prompt" aria-hidden="true">//</span><strong>{siteConfig.name}</strong></div>
     <p>{siteConfig.aiDisclosure}</p>
-    <p>{siteConfig.footerText}</p>
+    <FooterAttribution />
   </div>
+  <FooterNavigation contentLanguage={contentLanguage} />
 </footer>

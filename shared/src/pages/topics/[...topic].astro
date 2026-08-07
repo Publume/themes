@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content'
+import TopicsPage from '../../components/TopicsPage.astro'
+import Document from '../../layouts/Document.astro'
+import { topicsForLanguage } from '../../lib/articles'
+import { languageTopicsPath, siteConfig, textDirection, ui } from '../../lib/site'
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles')
+  const contentLanguage = siteConfig.defaultContentLanguage
+  const groups = topicsForLanguage(articles, contentLanguage)
+  return [
+    { params: { topic: undefined }, props: { articles, contentLanguage } },
+    ...groups.map((group) => ({
+      params: { topic: group.topic.id },
+      props: { articles, contentLanguage, topicId: group.topic.id },
+    })),
+  ]
+}
+
+type Props = {
+  articles: Awaited<ReturnType<typeof getCollection<'articles'>>>
+  contentLanguage: string
+  topicId?: string
+}
+const { articles, contentLanguage, topicId } = Astro.props
+const groups = topicsForLanguage(articles, contentLanguage)
+const selected = topicId ? groups.find((group) => group.topic.id === topicId) : undefined
+const alternates = siteConfig.outputLanguages.flatMap((language) => {
+  if (topicId && !topicsForLanguage(articles, language).some((group) => group.topic.id === topicId)) return []
+  return [
+    { language, href: new URL(languageTopicsPath(language, topicId), Astro.site ?? 'https://example.invalid/').href },
+  ]
+})
+---
+
+<Document title={selected?.topic.label ?? ui.topics} contentLanguage={contentLanguage} alternates={alternates}>
+  <div lang={contentLanguage} dir={textDirection(contentLanguage)}>
+    <TopicsPage groups={groups} contentLanguage={contentLanguage} selected={selected} />
+  </div>
+</Document>
