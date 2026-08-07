@@ -1,5 +1,5 @@
 ---
-import { siteConfig } from '../lib/site'
+import { siteConfig, sitePath } from '../lib/site'
 
 type Props = { className?: string }
 const { className } = Astro.props
@@ -10,5 +10,19 @@ const afterBrand = brandIndex < 0 ? '' : siteConfig.footerText.slice(brandIndex 
 ---
 
 <p class={className}>
-  {beforeBrand}{brandIndex >= 0 && <a href="https://github.com/Publume">{brand}</a>}{afterBrand}
+  {beforeBrand}{
+    brandIndex >= 0 && (
+      <a class="publume-attribution-link" href="https://github.com/Publume">
+        <img
+          class="publume-attribution-logo"
+          src={sitePath('/publume-logo.png')}
+          alt=""
+          aria-hidden="true"
+          width="16"
+          height="16"
+        />
+        {brand}
+      </a>
+    )
+  }{afterBrand}
 </p>

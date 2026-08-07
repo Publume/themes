@@ -45,6 +45,18 @@
     line-height: var(--type-meta-leading);
   }
 
+  .publume-attribution-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+  }
+
+  .publume-attribution-logo {
+    width: 1em;
+    height: 1em;
+    border-radius: 0.25em;
+  }
+
   .publume-page {
     padding-block: clamp(3rem, 7vw, 6rem);
   }

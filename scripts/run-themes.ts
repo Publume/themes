@@ -42,6 +42,7 @@ async function assertBuiltSite(directory: string): Promise<void> {
     'sitemap-index.xml',
     'pagefind/pagefind.js',
     'pagefind/pagefind-ui.js',
+    'publume-logo.png',
     'zh-CN/index.html',
     'zh-CN/archive/index.html',
     'zh-CN/search/index.html',
@@ -54,8 +55,10 @@ async function assertBuiltSite(directory: string): Promise<void> {
   }
 
   const home = await readFile(path.join(dist, 'index.html'), 'utf8')
-  if (!home.includes('href="https://github.com/Publume">Publume</a>'))
+  if (!home.includes('class="publume-attribution-link" href="https://github.com/Publume"'))
     throw new Error('Home page is missing the Publume GitHub attribution link')
+  if (!home.includes('class="publume-attribution-logo" src="/publume-logo.png"'))
+    throw new Error('Home page is missing the Publume attribution logo')
   const homeArticlePaths = new Set([...home.matchAll(/\bhref="(\/en\/[^/"?#]+\/)"/g)].map((match) => match[1]))
   if (homeArticlePaths.size !== expectedHomeArticleCount)
     throw new Error(`Home page has ${homeArticlePaths.size} articles; expected ${expectedHomeArticleCount}`)
