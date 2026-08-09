@@ -1,13 +1,16 @@
 import { z } from 'astro/zod'
 import rawConfig from '../data/site-config.generated.json'
 import { messagesFor, type SiteLocale } from '../i18n/messages'
+import { parsePresentation } from './presentation'
+import { contactUrlSchema, httpUrlSchema } from './url'
 
-const optionalUrl = z.union([z.literal(''), z.url()])
+const optionalHttpUrl = z.union([z.literal(''), httpUrlSchema])
+const optionalContactUrl = z.union([z.literal(''), contactUrlSchema])
 const language = z.string().min(2).max(35)
 
 const siteConfigSchema = z
   .object({
-    url: optionalUrl,
+    url: optionalHttpUrl,
     name: z.string(),
     description: z.string(),
     tagline: z.string(),
@@ -16,15 +19,16 @@ const siteConfigSchema = z
     defaultContentLanguage: language,
     publisherName: z.string(),
     authorName: z.string(),
-    contactUrl: optionalUrl,
+    contactUrl: optionalContactUrl,
     aiDisclosure: z.string(),
-    socialImageUrl: optionalUrl,
-    newsletterUrl: optionalUrl,
-    sponsorUrl: optionalUrl,
+    socialImageUrl: optionalHttpUrl,
+    newsletterUrl: optionalHttpUrl,
+    sponsorUrl: optionalHttpUrl,
     showTopics: z.boolean(),
     showScore: z.boolean(),
     showSources: z.boolean(),
     footerText: z.string(),
+    presentation: z.unknown().optional(),
   })
   .superRefine((value, context) => {
     if (new Set(value.outputLanguages).size !== value.outputLanguages.length)
@@ -53,6 +57,7 @@ export const siteConfig = {
   authorName: fallback(parsed.authorName, fallback(parsed.name, ui.defaultSiteName)),
   aiDisclosure: fallback(parsed.aiDisclosure, ui.defaultAiDisclosure),
   footerText: fallback(parsed.footerText, ui.defaultFooter),
+  presentation: parsePresentation(parsed.presentation),
 } as const
 
 export function sitePath(pathname: string): string {
@@ -88,6 +93,10 @@ export function languageSearchPath(languageTag: string): string {
   return languageSectionPath(languageTag, 'search')
 }
 
+export function languageSourcesPath(languageTag: string): string {
+  return languageSectionPath(languageTag, 'sources')
+}
+
 export function articleSlug(articleId: string): string {
   const separator = articleId.indexOf('/')
   return separator < 0 ? articleId : articleId.slice(separator + 1)
@@ -103,6 +112,11 @@ export function formatDate(date: Date, languageTag: string): string {
   } catch {
     return new Intl.DateTimeFormat(uiLocale).format(date)
   }
+}
+
+export function formatArticleCount(count: number, languageTag: string): string {
+  const template = count === 1 && ui.articleCountOne ? ui.articleCountOne : ui.articleCount
+  return template.replace('{count}', new Intl.NumberFormat(languageTag).format(count))
 }
 
 export function languageName(languageTag: string): string {

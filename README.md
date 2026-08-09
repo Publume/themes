@@ -12,7 +12,7 @@ shared runtime and the selected overlay into a standalone Website repository.
 
 ## Available themes
 
-| Theme | Purpose | Runtime JavaScript |
+| Theme | Purpose | Overlay JavaScript |
 | --- | --- | --- |
 | [`editorial`](themes/editorial) | Fast, readable publication for news and analysis | None |
 | [`journal`](themes/journal) | Warm, typography-led magazine for long-form reading | None |
@@ -38,15 +38,25 @@ Contract 1 has two deliberately separate parts:
 
 - `shared/` owns Astro, routes, language separation, the single interface
   translation catalog, accessible semantic typography, self-hosted Noto fonts,
-  archives, topics, static multilingual search, SEO, feeds, and GitHub Pages deployment;
-- `themes/<theme-id>/` owns only `Shell.astro`, `Home.astro`, `Article.astro`,
-  `theme.css`, and the schema-version-1 marker. Its `theme.css` is the single
-  owner of colors, content width, and component geometry.
+  archives, topics, language-scoped source directories, static multilingual
+  search, automatic SEO, controlled advertising, feeds, and GitHub Pages
+  deployment;
+- `themes/<theme-id>/` owns `Shell.astro`, `Home.astro`, `Article.astro`,
+  `theme.css`, the schema-version-1 marker, and optionally an `ArticleCard.astro`
+  override. Its `theme.css` is the single owner of colors, content width, and
+  component geometry; overlays never copy shared routes.
 
 The composed site builds with `bun install --frozen-lockfile` and `bun run
 build`, reads generated settings from `src/data/site-config.generated.json`, and
 reads generated Markdown from `src/content/articles/`. Themes never receive Core
 credentials and require no persistent server.
+
+Generated configuration may omit `presentation` or contain Core's empty legacy
+object, both of which keep advertising fully disabled. The versioned
+presentation contract can instead enable validated
+AdSense publisher and slot IDs for the home feed, archive, and article end. The
+runtime then owns the single provider script, placement markup, and `ads.txt`;
+custom script URLs and providers are rejected.
 
 At build time, the shared runtime bundles only the Noto script packs required by
 the configured interface and output languages. Every overlay uses the same

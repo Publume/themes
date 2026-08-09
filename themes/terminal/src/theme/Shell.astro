@@ -3,32 +3,32 @@ import FooterAttribution from '../components/FooterAttribution.astro'
 import FooterNavigation from '../components/FooterNavigation.astro'
 import LanguageSwitcher from '../components/LanguageSwitcher.astro'
 import PrimaryNavigation from '../components/PrimaryNavigation.astro'
-import { languageHomePath, siteConfig, ui } from '../lib/site'
+import { languageHomePath, siteConfig, ui, uiLocale } from '../lib/site'
 
 type Props = { contentLanguage: string }
 const { contentLanguage } = Astro.props
 ---
 
-<div class="terminal-status">
+<div class="terminal-status" lang={uiLocale}>
   <div class="shell status-inner">
     <span><i aria-hidden="true"></i>{ui.live}</span>
-    <span>{ui.monitoring} / {ui.sources}</span>
+    <span>{ui.monitoring}{siteConfig.showSources ? ` / ${ui.sources}` : ''}</span>
   </div>
 </div>
-<header class="site-header">
+<header lang={uiLocale} class="site-header">
   <div class="shell header-inner">
     <a class="brand" href={languageHomePath(contentLanguage)} aria-label={`${siteConfig.name} · ${ui.home}`}>
-      <span class="prompt" aria-hidden="true">&gt;_</span><span>{siteConfig.name}</span>
+      <span class="prompt" aria-hidden="true" lang="en">&gt;_</span><span>{siteConfig.name}</span>
     </a>
-    <PrimaryNavigation contentLanguage={contentLanguage} />
-    <LanguageSwitcher contentLanguage={contentLanguage} />
+    <div class="desktop-navigation"><PrimaryNavigation contentLanguage={contentLanguage} /></div>
+    <div class="desktop-language"><LanguageSwitcher contentLanguage={contentLanguage} /></div>
+    <details class="mobile-menu"><summary>{ui.primaryNavigation}<span aria-hidden="true">＋</span></summary><div class="mobile-menu-panel"><PrimaryNavigation contentLanguage={contentLanguage} /><LanguageSwitcher contentLanguage={contentLanguage} /></div></details>
   </div>
 </header>
 <main id="main-content"><slot /></main>
-<footer class="site-footer">
+<footer lang={uiLocale} class="site-footer">
   <div class="shell footer-grid">
-    <div><span class="prompt" aria-hidden="true">//</span><strong>{siteConfig.name}</strong></div>
-    <p>{siteConfig.aiDisclosure}</p>
+    <div><span class="prompt" aria-hidden="true" lang="en">//</span><strong>{siteConfig.name}</strong></div>
     <FooterAttribution />
   </div>
   <FooterNavigation contentLanguage={contentLanguage} />

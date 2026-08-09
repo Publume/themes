@@ -1,0 +1,24 @@
+---
+import { uiLocale } from '../lib/site'
+
+type Props = {
+  urls: readonly string[]
+  label: string
+  className?: string
+  headingId?: string
+}
+
+const { urls, label, className = 'sources', headingId = 'sources-heading' } = Astro.props
+---
+
+<section class:list={[className, 'publume-article-sources']} lang={uiLocale} aria-labelledby={headingId}>
+  <h2 id={headingId}>{label}</h2>
+  <ol>
+    {urls.map((url, index) => (
+      <li>
+        <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+        <a href={url} rel="noopener noreferrer">{new URL(url).hostname}</a>
+      </li>
+    ))}
+  </ol>
+</section>

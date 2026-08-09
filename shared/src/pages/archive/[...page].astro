@@ -24,15 +24,21 @@ type Props = {
 const { allArticles, articles, page, pageCount } = Astro.props
 const contentLanguage = siteConfig.defaultContentLanguage
 const pageArticles = articles.slice((page - 1) * archivePageSize, page * archivePageSize)
-const alternates = siteConfig.outputLanguages.flatMap((language) => {
-  const pages = Math.max(1, Math.ceil(articlesForLanguage(allArticles, language).length / archivePageSize))
-  return page <= pages
-    ? [{ language, href: new URL(languageArchivePath(language, page), Astro.site ?? 'https://example.invalid/').href }]
-    : []
-})
+const alternates = Astro.site
+  ? siteConfig.outputLanguages.flatMap((language) => {
+      const pages = Math.max(1, Math.ceil(articlesForLanguage(allArticles, language).length / archivePageSize))
+      return page <= pages ? [{ language, href: new URL(languageArchivePath(language, page), Astro.site).href }] : []
+    })
+  : []
 ---
 
-<Document title={page === 1 ? ui.archive : `${ui.archive} · ${ui.page} ${page}`} contentLanguage={contentLanguage} alternates={alternates}>
+<Document
+  title={page === 1 ? ui.archive : `${ui.archive} · ${ui.page} ${page}`}
+  contentLanguage={contentLanguage}
+  kind="collection"
+  alternates={alternates}
+  adPlacement={pageArticles.length > 0 ? 'archiveInline' : undefined}
+>
   <div lang={contentLanguage} dir={textDirection(contentLanguage)}>
     <ArchivePage articles={pageArticles} contentLanguage={contentLanguage} page={page} pageCount={pageCount} total={articles.length} />
   </div>

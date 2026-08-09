@@ -1,12 +1,24 @@
 ---
 import type { Article } from '../lib/articles'
-import { articlePath, formatDate, siteConfig, ui } from '../lib/site'
+import { articlePath, formatDate, siteConfig, ui, uiLocale } from '../lib/site'
 
 type Props = { articles: readonly Article[]; contentLanguage: string }
 const { articles, contentLanguage } = Astro.props
-const sourceCount = new Set(articles.flatMap((article) => article.data.sourceUrls.map((url) => new URL(url).hostname)))
-  .size
+const [lead, ...headlines] = articles
+const headlineSections = [
+  { className: 'headline-list', articles: headlines.slice(0, 4), sequenceStart: 2 },
+  { className: 'briefing-more', articles: headlines.slice(4), sequenceStart: 6 },
+]
+const sourceCount = siteConfig.showSources
+  ? new Set(articles.flatMap((article) => article.data.sourceUrls.map((url) => new URL(url).hostname))).size
+  : 0
 ---
 
-<section class="briefing-hero shell"><div class="hero-copy"><p class="eyebrow">{ui.latest}</p><h1>{siteConfig.tagline}</h1><p>{siteConfig.description}</p>{(siteConfig.newsletterUrl || siteConfig.sponsorUrl) && <div class="hero-actions">{siteConfig.newsletterUrl && <a class="button primary" href={siteConfig.newsletterUrl}>{ui.newsletter}</a>}{siteConfig.sponsorUrl && <a class="button secondary" href={siteConfig.sponsorUrl}>{ui.sponsor}</a>}</div>}</div><dl class="briefing-stats" aria-label={ui.latest}><div><dt>{ui.published}</dt><dd>{String(articles.length).padStart(2,'0')}</dd></div><div><dt>{ui.sources}</dt><dd>{String(sourceCount).padStart(2,'0')}</dd></div><div><dt>{ui.mode}</dt><dd>{ui.live}</dd></div></dl></section>
-<section class="briefing-feed shell" aria-labelledby="latest-heading"><div class="section-heading"><div><p class="eyebrow">{ui.published}</p><h2 id="latest-heading">{ui.latest}</h2></div><span class="pulse-label"><i aria-hidden="true"></i>{ui.monitoring}</span></div>{articles.length > 0 ? <div class="brief-list">{articles.map((article,index) => <article class:list={['brief-card',{featured:index===0}]}><div class="sequence">{String(index+1).padStart(2,'0')}</div><div class="brief-content"><div class="article-meta"><time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt, contentLanguage)}</time>{siteConfig.showScore && article.data.score !== undefined && <span class="score">{ui.relevance} {Math.round(article.data.score*100)}</span>}</div><h2><a href={articlePath(article.id, contentLanguage)}>{article.data.title}</a></h2><p>{article.data.summary}</p><div class="card-footer">{siteConfig.showTopics && article.data.topics.length > 0 && <ul class="topic-list" aria-label={ui.topics}>{article.data.topics.map((topic) => <li>{topic}</li>)}</ul>}<a class="read-link" href={articlePath(article.id, contentLanguage)}>{ui.readArticle} <span aria-hidden="true">↗</span></a></div></div></article>)}</div> : <div class="empty-state"><span aria-hidden="true">00</span><h2>{ui.emptyTitle}</h2><p>{ui.emptyDescription}</p></div>}</section>
+<section class="briefing-overview shell" lang={uiLocale} aria-labelledby="briefing-title"><div class="overview-title"><p class="eyebrow">{ui.mode} / {ui.latest}</p><h1 id="briefing-title">{siteConfig.tagline}</h1></div><p class="overview-copy">{siteConfig.description}</p><dl class="briefing-stats" aria-label={ui.latest}><div><dt>{ui.published}</dt><dd>{String(articles.length).padStart(2,'0')}</dd></div>{siteConfig.showSources && <div><dt>{ui.sources}</dt><dd>{String(sourceCount).padStart(2,'0')}</dd></div>}<div><dt>{ui.mode}</dt><dd>{ui.live}</dd></div></dl>{(siteConfig.newsletterUrl || siteConfig.sponsorUrl) && <div class="hero-actions">{siteConfig.newsletterUrl && <a class="button primary" href={siteConfig.newsletterUrl}>{ui.newsletter}</a>}{siteConfig.sponsorUrl && <a class="button secondary" href={siteConfig.sponsorUrl}>{ui.sponsor}</a>}</div>}</section>
+<section class="briefing-feed shell" aria-labelledby="latest-heading">
+  <div class="section-heading" lang={uiLocale}><div><p class="eyebrow">{ui.latest} 01</p><h2 id="latest-heading">{ui.latest}</h2></div><span class="pulse-label"><i aria-hidden="true"></i>{ui.monitoring}</span></div>
+  {lead ? <div class:list={['briefing-board', { 'single-story': headlines.length === 0 }]}>
+    <article class="lead-brief"><div class="article-meta"><time datetime={lead.data.publishedAt.toISOString()}>{formatDate(lead.data.publishedAt, contentLanguage)}</time>{siteConfig.showScore && lead.data.score !== undefined && <span class="score" lang={uiLocale}>{ui.relevance} {Math.round(lead.data.score * 100)}</span>}</div><h2><a href={articlePath(lead.id, contentLanguage)}>{lead.data.title}</a></h2><p>{lead.data.summary}</p>{siteConfig.showTopics && lead.data.topics.length > 0 && <ul class="topic-list">{lead.data.topics.map((topic) => <li>{topic}</li>)}</ul>}<a class="read-link" lang={uiLocale} href={articlePath(lead.id, contentLanguage)}>{ui.readArticle} <span aria-hidden="true">↗</span></a></article>
+    {headlineSections.map((section) => section.articles.length > 0 && <div class={section.className}>{section.articles.map((article, index) => <article class="headline"><span class="sequence">{String(section.sequenceStart + index).padStart(2, '0')}</span><div><div class="article-meta"><time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt, contentLanguage)}</time>{siteConfig.showScore && article.data.score !== undefined && <span class="score" lang={uiLocale}>{ui.relevance} {Math.round(article.data.score * 100)}</span>}</div><h3><a href={articlePath(article.id, contentLanguage)}>{article.data.title}</a></h3><p>{article.data.summary}</p></div><a class="headline-link" href={articlePath(article.id, contentLanguage)} aria-label={article.data.title}>↗</a></article>)}</div>)}
+  </div> : <div class="empty-state" lang={uiLocale}><span aria-hidden="true">00</span><h2>{ui.emptyTitle}</h2><p>{ui.emptyDescription}</p></div>}
+</section>

@@ -28,32 +28,66 @@
   }
 }
 
+@layer components {
+  .publume-page-header {
+    padding: 32px;
+    border-block: 2px solid var(--text);
+    background: linear-gradient(90deg, var(--accent) 0 12px, transparent 12px);
+  }
+  .publume-article-card {
+    border: 2px solid var(--text);
+    border-inline-start: 12px solid var(--primary);
+    background: var(--surface);
+  }
+  .publume-topic-directory,
+  .publume-source-directory {
+    padding: 1rem;
+    border: 2px solid var(--text);
+    background: var(--surface);
+  }
+  .publume-search-results {
+    padding: 1rem;
+    border: 2px solid var(--primary);
+    background: var(--surface);
+  }
+  .publume-facts {
+    padding-inline: 1rem;
+    border: 2px solid var(--text);
+    background: var(--surface);
+  }
+  .publume-pagination {
+    padding-block: 16px;
+    border-block: 2px solid var(--text);
+    font-family: var(--font-mono);
+    font-weight: var(--weight-bold);
+  }
+}
+
 @layer base {
   :root {
-    color-scheme: dark;
-    --primary: #5cffb0;
-    --accent: #ff5ac8;
-    --background: #0b0716;
-    --surface: #171025;
-    --text: #f8f4ff;
-    --muted: #9a8caf;
+    color-scheme: light;
+    --primary: #2737cc;
+    --accent: #ee3c75;
+    --background: #eee6ce;
+    --surface: #fffaf0;
+    --text: #121212;
+    --muted: #625f57;
     --content-width: 1240px;
     --card-radius: 0px;
     font-family: var(--font-ui);
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     --arcade-rule: color-mix(in srgb, var(--text) 18%, transparent);
-    --arcade-pink: color-mix(in srgb, var(--accent) 36%, var(--surface));
-    --arcade-blue: color-mix(in srgb, var(--primary) 22%, var(--surface));
+    --arcade-pink: color-mix(in srgb, var(--accent) 18%, var(--surface));
+    --arcade-blue: color-mix(in srgb, var(--primary) 14%, var(--surface));
   }
 
   body {
     min-width: 320px;
     color: var(--text);
     background:
-      linear-gradient(90deg, color-mix(in srgb, var(--primary) 4%, transparent) 1px, transparent 1px),
-      linear-gradient(color-mix(in srgb, var(--accent) 4%, transparent) 1px, transparent 1px), var(--background);
-    background-size: 2rem 2rem;
+      linear-gradient(90deg, color-mix(in srgb, var(--text) 4%, transparent) 1px, transparent 1px), var(--background);
+    background-size: 32px 100%;
     font-family: var(--font-body);
     font-size: var(--type-body-size);
     line-height: var(--type-body-leading);
@@ -70,7 +104,7 @@
   }
 
   :focus-visible {
-    outline: 3px solid var(--accent);
+    outline: 3px solid var(--primary);
     outline-offset: 4px;
   }
 
@@ -80,7 +114,7 @@
   }
 
   .shell {
-    width: min(calc(100% - 2rem), var(--content-width));
+    width: min(calc(100% - 48px), var(--content-width));
     margin-inline: auto;
   }
 
@@ -101,7 +135,7 @@
 
   .arcade-label,
   .article-meta {
-    color: var(--primary);
+    color: var(--text);
     font-family: var(--font-mono);
     font-size: var(--type-caption-size);
     font-weight: var(--weight-bold);
@@ -113,8 +147,8 @@
 
 @layer components {
   .arcade-top {
-    color: var(--background);
-    background: var(--primary);
+    color: var(--surface);
+    background: var(--text);
     font-family: var(--font-mono);
     font-size: var(--type-caption-size);
     font-weight: var(--weight-bold);
@@ -124,7 +158,7 @@
 
   .arcade-top .shell {
     display: flex;
-    min-height: 2rem;
+    min-height: 32px;
     align-items: center;
     justify-content: space-between;
   }
@@ -132,15 +166,15 @@
   .site-header {
     border-block-end: 2px solid var(--text);
     background: color-mix(in srgb, var(--background) 88%, transparent);
-    backdrop-filter: blur(16px);
+    backdrop-filter: blur(12px);
   }
 
   .header-inner {
     display: grid;
-    grid-template-columns: 1fr auto auto;
-    gap: clamp(1rem, 4vw, 3rem);
+    grid-template-columns: minmax(12rem, 1fr) auto auto auto;
+    gap: 24px;
     align-items: center;
-    min-height: 5.25rem;
+    min-height: 72px;
   }
 
   .brand {
@@ -152,6 +186,13 @@
     text-transform: uppercase;
   }
 
+  .header-deck {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--type-caption-size);
+    line-height: var(--type-caption-leading);
+  }
+
   .arcade-mark {
     display: grid;
     grid-template-columns: repeat(2, 0.7rem);
@@ -159,7 +200,7 @@
     padding: 0.25rem;
     border: 2px solid var(--text);
     background: var(--surface);
-    box-shadow: 0.25rem 0.25rem 0 var(--accent);
+    box-shadow: 4px 4px 0 var(--accent);
   }
 
   .arcade-mark i {
@@ -173,7 +214,7 @@
     background: var(--accent);
   }
 
-  nav {
+  .desktop-navigation nav {
     display: flex;
     gap: clamp(1rem, 3vw, 2rem);
     font-family: var(--font-mono);
@@ -183,16 +224,29 @@
     text-transform: uppercase;
   }
 
-  nav a {
+  .desktop-navigation a {
     text-decoration: none;
+  }
+
+  .mobile-menu {
+    display: none;
+  }
+
+  .mobile-menu summary {
+    list-style: none;
+  }
+
+  .mobile-menu summary::-webkit-details-marker {
+    display: none;
   }
 
   .arcade-hero {
     display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(20rem, 0.8fr);
-    gap: clamp(3rem, 8vw, 8rem);
+    grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
+    gap: 32px;
     align-items: center;
-    padding-block: clamp(4rem, 9vw, 8rem);
+    padding-block: 48px;
+    border-inline: 2px solid var(--text);
   }
 
   .hero-copy h1,
@@ -203,7 +257,7 @@
     font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-display);
     line-height: var(--type-display-leading);
-    text-shadow: 0.18rem 0.18rem 0 color-mix(in srgb, var(--accent) 60%, transparent);
+    text-shadow: 3px 3px 0 color-mix(in srgb, var(--accent) 42%, transparent);
   }
 
   .hero-copy > p:not(.arcade-label),
@@ -218,13 +272,13 @@
   .player-panel {
     border: 2px solid var(--text);
     background: var(--surface);
-    box-shadow: 0.75rem 0.75rem 0 color-mix(in srgb, var(--accent) 60%, transparent);
+    box-shadow: 8px 8px 0 var(--text);
   }
 
   .pixel-art {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    min-height: 15rem;
+    min-height: 192px;
     align-items: end;
     gap: 0.8rem;
     padding: 2rem;
@@ -336,29 +390,25 @@
   .arcade-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.25rem;
-    padding-block-start: 1.25rem;
+    gap: 16px;
+    padding-block-start: 16px;
   }
 
   .game-card {
     display: flex;
     flex-direction: column;
-    min-height: 25rem;
+    min-height: 320px;
     padding: clamp(1.25rem, 3vw, 2rem);
     border: 2px solid var(--text);
     background: var(--surface);
-    box-shadow: 0.45rem 0.45rem 0 var(--arcade-blue);
+    box-shadow: 6px 6px 0 var(--text);
   }
 
   .game-card.featured {
     grid-column: 1 / -1;
-    min-height: 30rem;
+    min-height: 368px;
     background: var(--arcade-pink);
-    box-shadow: 0.55rem 0.55rem 0 var(--accent);
-  }
-
-  .game-card:nth-child(3n) {
-    background: var(--arcade-blue);
+    box-shadow: 8px 8px 0 var(--accent);
   }
 
   .game-head {
@@ -471,7 +521,7 @@
     padding: clamp(2rem, 6vw, 5rem);
     border: 2px solid var(--text);
     background: var(--arcade-pink);
-    box-shadow: 0.75rem 0.75rem 0 var(--accent);
+    box-shadow: 8px 8px 0 var(--text);
   }
 
   .article-header .article-meta {
@@ -592,7 +642,7 @@
 
   .footer-grid {
     display: grid;
-    grid-template-columns: 0.8fr 1fr 0.8fr;
+    grid-template-columns: 1fr 1fr;
     gap: clamp(2rem, 7vw, 7rem);
   }
 
@@ -603,15 +653,89 @@
   }
 }
 
-@media (max-width: 58rem) {
+@media (max-width: 68rem) {
   @layer components {
-    .header-inner {
-      grid-template-columns: 1fr auto;
-      padding-block: 1rem;
+    .header-deck {
+      display: none;
     }
 
-    .header-inner .language-switcher {
-      grid-column: 1 / -1;
+    .header-inner {
+      grid-template-columns: minmax(0, 1fr) auto auto;
+    }
+  }
+}
+
+@media (max-width: 58rem) {
+  @layer components {
+    .desktop-navigation,
+    .desktop-language {
+      display: none;
+    }
+
+    .header-inner {
+      position: relative;
+      grid-template-columns: minmax(0, 1fr) auto;
+      min-height: 64px;
+    }
+
+    .brand {
+      min-width: 0;
+    }
+
+    .brand > span:last-child {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mobile-menu {
+      display: block;
+    }
+
+    .mobile-menu summary {
+      display: inline-flex;
+      min-width: 112px;
+      min-height: 44px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 2px solid var(--text);
+      background: var(--surface);
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: var(--type-caption-size);
+      font-weight: var(--weight-bold);
+      line-height: var(--type-caption-leading);
+    }
+
+    .mobile-menu[open] summary {
+      color: var(--surface);
+      background: var(--text);
+    }
+
+    .mobile-menu-panel {
+      position: absolute;
+      z-index: 20;
+      inset: calc(100% - 1px) 0 auto auto;
+      display: grid;
+      width: min(320px, calc(100vw - 32px));
+      gap: 16px;
+      padding: 16px;
+      border: 2px solid var(--text);
+      background: var(--surface);
+      box-shadow: 6px 6px 0 var(--accent);
+    }
+
+    .mobile-menu-panel .publume-primary-navigation,
+    .mobile-menu-panel .language-switcher {
+      display: grid;
+      overflow: visible;
+    }
+
+    .mobile-menu-panel a {
+      min-height: 44px;
+      align-items: center;
     }
 
     .arcade-hero,
@@ -635,10 +759,26 @@
 
 @media (max-width: 40rem) {
   @layer components {
-    nav,
+    .shell {
+      width: min(calc(100% - 32px), var(--content-width));
+    }
+
     .section-heading .arcade-label,
     .section-heading > span {
       display: none;
+    }
+
+    .arcade-top .shell span:first-child {
+      display: none;
+    }
+
+    .arcade-top .shell {
+      justify-content: flex-end;
+    }
+
+    .arcade-hero {
+      padding-block: 32px;
+      border-inline: 0;
     }
 
     .section-heading {
@@ -652,5 +792,20 @@
     .game-card.featured {
       grid-column: auto;
     }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto;
+    transition-duration: 0.01ms;
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
   }
 }

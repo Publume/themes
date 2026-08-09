@@ -3,21 +3,24 @@ import FooterAttribution from '../components/FooterAttribution.astro'
 import FooterNavigation from '../components/FooterNavigation.astro'
 import LanguageSwitcher from '../components/LanguageSwitcher.astro'
 import PrimaryNavigation from '../components/PrimaryNavigation.astro'
-import { languageHomePath, siteConfig, ui } from '../lib/site'
+import { languageHomePath, siteConfig, ui, uiLocale } from '../lib/site'
 
 type Props = { contentLanguage: string }
 const { contentLanguage } = Astro.props
 ---
 
-<header class="site-header">
+<header lang={uiLocale} class="site-header">
+  <div class="shell atlas-bar"><span lang="en">34°03′N / 118°14′W</span><span>{ui.monitoring} · {ui.live}</span></div>
   <div class="shell header-inner">
     <a class="brand" href={languageHomePath(contentLanguage)} aria-label={`${siteConfig.name} · ${ui.home}`}><span class="compass" aria-hidden="true"><i></i></span><span>{siteConfig.name}</span></a>
-    <PrimaryNavigation contentLanguage={contentLanguage} />
-    <LanguageSwitcher contentLanguage={contentLanguage} />
+    <p class="header-deck">{siteConfig.tagline}</p>
+    <div class="desktop-navigation"><PrimaryNavigation contentLanguage={contentLanguage} /></div>
+    <div class="desktop-language"><LanguageSwitcher contentLanguage={contentLanguage} /></div>
+    <details class="mobile-menu"><summary aria-label={ui.primaryNavigation}><span class="menu-label">{ui.primaryNavigation}</span><span aria-hidden="true">＋</span></summary><div class="mobile-menu-panel"><PrimaryNavigation contentLanguage={contentLanguage} /><LanguageSwitcher contentLanguage={contentLanguage} /></div></details>
   </div>
 </header>
 <main id="main-content"><slot /></main>
-<footer class="site-footer">
-  <div class="shell footer-grid"><div><span class="compass small" aria-hidden="true"><i></i></span><strong>{siteConfig.name}</strong></div><div><p class="map-label">{ui.disclosure}</p><p>{siteConfig.aiDisclosure}</p></div><FooterAttribution /></div>
+<footer lang={uiLocale} class="site-footer">
+  <div class="shell footer-grid"><div><span class="compass small" aria-hidden="true"><i></i></span><strong>{siteConfig.name}</strong></div><FooterAttribution /></div>
   <FooterNavigation contentLanguage={contentLanguage} />
 </footer>

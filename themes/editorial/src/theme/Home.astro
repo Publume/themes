@@ -1,36 +1,49 @@
 ---
 import type { Article } from '../lib/articles'
-import { articlePath, formatDate, siteConfig, ui } from '../lib/site'
+import { articlePath, formatArticleCount, formatDate, siteConfig, ui, uiLocale } from '../lib/site'
 
 type Props = { articles: readonly Article[]; contentLanguage: string }
 const { articles, contentLanguage } = Astro.props
 const [featured, ...remaining] = articles
+const headlines = remaining.slice(0, 3)
+const moreStories = remaining.slice(3)
+const articleCount = formatArticleCount(articles.length, contentLanguage)
 ---
 
-<section class="hero shell">
-  <p class="eyebrow">{ui.latest}</p>
-  <h1>{siteConfig.tagline}</h1>
-  <p class="hero-copy">{siteConfig.description}</p>
-  {(siteConfig.newsletterUrl || siteConfig.sponsorUrl) && <div class="hero-actions">
-    {siteConfig.newsletterUrl && <a class="button primary" href={siteConfig.newsletterUrl}>{ui.newsletter}</a>}
-    {siteConfig.sponsorUrl && <a class="button secondary" href={siteConfig.sponsorUrl}>{ui.sponsor}</a>}
-  </div>}
+<section class="shell cover-intro" aria-labelledby="hero-title">
+  <div lang={uiLocale}>
+    <p class="eyebrow">{ui.monitoring} / {siteConfig.publisherName}</p>
+    <h1 id="hero-title">{siteConfig.tagline}</h1>
+  </div>
+  <div class="cover-deck" lang={uiLocale}>
+    <p>{siteConfig.description}</p>
+    <p class="cover-count">{articleCount}</p>
+    {(siteConfig.newsletterUrl || siteConfig.sponsorUrl) && <div class="hero-actions">
+      {siteConfig.newsletterUrl && <a class="button primary" href={siteConfig.newsletterUrl}>{ui.newsletter} <span aria-hidden="true">↗</span></a>}
+      {siteConfig.sponsorUrl && <a class="button secondary" href={siteConfig.sponsorUrl}>{ui.sponsor} <span aria-hidden="true">↗</span></a>}
+    </div>}
+  </div>
 </section>
-<section class="feed shell" aria-labelledby="latest-heading">
-  <div class="section-heading"><div><p class="eyebrow">{ui.published}</p><h2 id="latest-heading">{ui.latest}</h2></div></div>
+<section class="shell cover-feed" aria-labelledby="latest-heading">
+  <div class="section-heading" lang={uiLocale}><span aria-hidden="true">01</span><h2 id="latest-heading">{ui.latest}</h2><p>{articleCount}</p></div>
   {featured ? <>
-    <article class="article-card featured">
-      <div class="article-meta"><time datetime={featured.data.publishedAt.toISOString()}>{formatDate(featured.data.publishedAt, contentLanguage)}</time></div>
-      <h2><a href={articlePath(featured.id, contentLanguage)}>{featured.data.title}</a></h2>
-      <p>{featured.data.summary}</p>
-      {siteConfig.showTopics && featured.data.topics.length > 0 && <ul class="topic-list" aria-label={ui.topics}>{featured.data.topics.map((topic) => <li>{topic}</li>)}</ul>}
-      <a class="read-link" href={articlePath(featured.id, contentLanguage)}>{ui.readArticle} <span aria-hidden="true">→</span></a>
-    </article>
-    {remaining.length > 0 && <div class="article-grid">{remaining.map((article) => <article class="article-card">
-      <div class="article-meta"><time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt, contentLanguage)}</time></div>
-      <h2><a href={articlePath(article.id, contentLanguage)}>{article.data.title}</a></h2><p>{article.data.summary}</p>
-      {siteConfig.showTopics && article.data.topics.length > 0 && <ul class="topic-list" aria-label={ui.topics}>{article.data.topics.map((topic) => <li>{topic}</li>)}</ul>}
-      <a class="read-link" href={articlePath(article.id, contentLanguage)}>{ui.readArticle} <span aria-hidden="true">→</span></a>
-    </article>)}</div>}
-  </> : <div class="empty-state"><h2>{ui.emptyTitle}</h2><p>{ui.emptyDescription}</p></div>}
+    <div class:list={['front-cover', { 'single-story': headlines.length === 0 }]}>
+      <article class="lead-story">
+        <div class="lead-folio" aria-hidden="true"><span>01</span><b lang="en">P</b></div>
+        <div class="article-meta"><time datetime={featured.data.publishedAt.toISOString()}>{formatDate(featured.data.publishedAt, contentLanguage)}</time></div>
+        <h2><a href={articlePath(featured.id, contentLanguage)}>{featured.data.title}</a></h2>
+        <p>{featured.data.summary}</p>
+        {siteConfig.showTopics && featured.data.topics.length > 0 && <ul class="topic-list">{featured.data.topics.map((topic) => <li>{topic}</li>)}</ul>}
+        <a class="read-link" lang={uiLocale} href={articlePath(featured.id, contentLanguage)}>{ui.readArticle} <span aria-hidden="true">↗</span></a>
+      </article>
+      {headlines.length > 0 && <aside class="headline-rail" lang={contentLanguage}>
+        <p class="rail-label" lang={uiLocale}>{ui.published}</p>
+        {headlines.map((article, index) => <article>
+          <span class="headline-index" aria-hidden="true">{String(index + 2).padStart(2, '0')}</span>
+          <div><time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt, contentLanguage)}</time><h3><a href={articlePath(article.id, contentLanguage)}>{article.data.title}</a></h3><p>{article.data.summary}</p></div>
+        </article>)}
+      </aside>}
+    </div>
+    {moreStories.length > 0 && <div class="story-grid">{moreStories.map((article, index) => <article class="story-card"><span class="story-index" aria-hidden="true">{String(index + 5).padStart(2, '0')}</span><div class="article-meta"><time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt, contentLanguage)}</time></div><h3><a href={articlePath(article.id, contentLanguage)}>{article.data.title}</a></h3><p>{article.data.summary}</p><a class="read-link" lang={uiLocale} href={articlePath(article.id, contentLanguage)}>{ui.readArticle} <span aria-hidden="true">↗</span></a></article>)}</div>}
+  </> : <div class="empty-state" lang={uiLocale}><h2>{ui.emptyTitle}</h2><p>{ui.emptyDescription}</p></div>}
 </section>

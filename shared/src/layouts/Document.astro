@@ -1,21 +1,25 @@
 ---
-import { languageRssPath, siteConfig, sitePath, textDirection, ui } from '../lib/site'
+import type { AdPlacementId } from '../lib/presentation'
+import { languageRssPath, siteConfig, sitePath, textDirection, ui, uiLocale } from '../lib/site'
 import Shell from '../theme/Shell.astro'
 import '../styles/fonts.generated.css'
 import '../styles/typography.css'
 import '../styles/runtime.css'
 import '../theme/theme.css'
+import '../styles/responsive.css'
 
 type Alternate = { language: string; href: string }
+type PageKind = 'website' | 'collection' | 'search' | 'about' | 'article' | 'notFound'
 type Props = {
   title?: string
   description?: string
   contentLanguage: string
-  kind?: 'website' | 'article'
+  kind?: PageKind
   publishedAt?: Date
   sources?: readonly string[]
   alternates?: readonly Alternate[]
   noindex?: boolean
+  adPlacement?: AdPlacementId
 }
 
 const {
@@ -27,24 +31,45 @@ const {
   sources = [],
   alternates = [],
   noindex = false,
+  adPlacement,
 } = Astro.props
 const documentTitle = title === siteConfig.name ? title : `${title} | ${siteConfig.name}`
-const canonical = !noindex && Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined
+const canonical = kind !== 'notFound' && Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined
 const defaultAlternate = alternates.find((alternate) => alternate.language === siteConfig.defaultContentLanguage)
+const logoImage = Astro.site ? new URL(sitePath('/publume-logo.png'), Astro.site).href : undefined
+const socialImage = siteConfig.socialImageUrl || logoImage
+const siteRoot = Astro.site ? new URL(sitePath('/'), Astro.site).href : undefined
+const schemaTypes: Record<PageKind, string> = {
+  website: 'WebSite',
+  collection: 'CollectionPage',
+  search: 'SearchResultsPage',
+  about: 'AboutPage',
+  article: 'Article',
+  notFound: 'WebPage',
+}
 const structuredData = {
   '@context': 'https://schema.org',
-  '@type': kind === 'article' ? 'NewsArticle' : 'WebSite',
-  name: kind === 'website' ? siteConfig.name : undefined,
+  '@type': schemaTypes[kind],
+  name: kind === 'article' ? undefined : title,
   headline: kind === 'article' ? title : undefined,
   description,
   url: canonical,
   datePublished: publishedAt?.toISOString(),
   inLanguage: contentLanguage,
-  author: kind === 'article' ? { '@type': 'Organization', name: siteConfig.authorName } : undefined,
-  publisher: { '@type': 'Organization', name: siteConfig.publisherName },
+  image: socialImage,
+  mainEntityOfPage: kind === 'article' ? canonical : undefined,
+  author: kind === 'article' ? { '@type': 'Person', name: siteConfig.authorName } : undefined,
+  publisher: {
+    '@type': 'Organization',
+    name: siteConfig.publisherName,
+    logo: logoImage ? { '@type': 'ImageObject', url: logoImage } : undefined,
+  },
   citation: sources.length > 0 ? sources : undefined,
+  isPartOf: kind !== 'website' ? { '@type': 'WebSite', name: siteConfig.name, url: siteRoot } : undefined,
 }
 const jsonLd = JSON.stringify(structuredData).replace(/</g, '\\u003c')
+const ads = siteConfig.presentation.ads
+const hasAdSlot = ads.provider === 'adsense' && adPlacement !== undefined && Boolean(ads.slots[adPlacement])
 ---
 
 <!doctype html>
@@ -54,29 +79,40 @@ const jsonLd = JSON.stringify(structuredData).replace(/</g, '\\u003c')
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    {noindex && <meta name="robots" content="noindex" />}
+    {noindex && <meta name="robots" content="noindex,follow" />}
     <title>{documentTitle}</title>
     {canonical && <link rel="canonical" href={canonical} />}
     {alternates.map((alternate) => <link rel="alternate" hreflang={alternate.language} href={alternate.href} />)}
     {defaultAlternate && <link rel="alternate" hreflang="x-default" href={defaultAlternate.href} />}
     <link rel="icon" type="image/png" href={sitePath('/publume-logo.png')} />
     <link rel="apple-touch-icon" href={sitePath('/publume-logo.png')} />
-    <link rel="alternate" type="application/rss+xml" title={`${siteConfig.name} RSS`} href={languageRssPath(contentLanguage)} />
-    <meta property="og:type" content={kind} />
+    {Astro.site && (
+      <link rel="alternate" type="application/rss+xml" title={`${siteConfig.name} RSS`} href={languageRssPath(contentLanguage)} />
+    )}
+    <meta property="og:type" content={kind === 'article' ? 'article' : 'website'} />
     <meta property="og:site_name" content={siteConfig.name} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:locale" content={contentLanguage.replace('-', '_')} />
     {canonical && <meta property="og:url" content={canonical} />}
-    {siteConfig.socialImageUrl && <meta property="og:image" content={siteConfig.socialImageUrl} />}
+    {socialImage && <meta property="og:image" content={socialImage} />}
     <meta name="twitter:card" content={siteConfig.socialImageUrl ? 'summary_large_image' : 'summary'} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    {siteConfig.socialImageUrl && <meta name="twitter:image" content={siteConfig.socialImageUrl} />}
+    {socialImage && <meta name="twitter:image" content={socialImage} />}
+    {hasAdSlot && ads.provider === 'adsense' && (
+      <script
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ads.publisherId}`}
+        crossorigin="anonymous"
+        data-ad-client={ads.publisherId}
+        is:inline
+      ></script>
+    )}
     <script type="application/ld+json" set:html={jsonLd} is:inline />
   </head>
   <body>
-    <a class="skip-link" href="#main-content">{ui.skipToContent}</a>
+    <a class="skip-link" lang={uiLocale} href="#main-content">{ui.skipToContent}</a>
     <Shell contentLanguage={contentLanguage}>
       <slot />
     </Shell>

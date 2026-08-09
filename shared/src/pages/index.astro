@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content'
+import AdSlot from '../components/AdSlot.astro'
 import Document from '../layouts/Document.astro'
 import { articlesForLanguage, homeArticleLimit } from '../lib/articles'
 import { languageHomePath, siteConfig, textDirection } from '../lib/site'
@@ -7,14 +8,17 @@ import Home from '../theme/Home.astro'
 
 const contentLanguage = siteConfig.defaultContentLanguage
 const articles = articlesForLanguage(await getCollection('articles'), contentLanguage)
-const alternates = siteConfig.outputLanguages.map((language) => ({
-  language,
-  href: new URL(languageHomePath(language), Astro.site ?? 'https://example.invalid/').href,
-}))
+const alternates = Astro.site
+  ? siteConfig.outputLanguages.map((language) => ({
+      language,
+      href: new URL(languageHomePath(language), Astro.site).href,
+    }))
+  : []
 ---
 
-<Document contentLanguage={contentLanguage} alternates={alternates}>
+<Document contentLanguage={contentLanguage} alternates={alternates} adPlacement="homeAfterFeed">
   <div lang={contentLanguage} dir={textDirection(contentLanguage)}>
     <Home articles={articles.slice(0, homeArticleLimit)} contentLanguage={contentLanguage} />
+    <AdSlot placement="homeAfterFeed" />
   </div>
 </Document>

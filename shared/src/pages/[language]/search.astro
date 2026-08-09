@@ -11,12 +11,14 @@ export function getStaticPaths() {
 
 type Props = { contentLanguage: string }
 const { contentLanguage } = Astro.props
-const alternates = siteConfig.outputLanguages.map((language) => ({
-  language,
-  href: new URL(languageSearchPath(language), Astro.site ?? 'https://example.invalid/').href,
-}))
+const alternates = Astro.site
+  ? siteConfig.outputLanguages.map((language) => ({
+      language,
+      href: new URL(languageSearchPath(language), Astro.site).href,
+    }))
+  : []
 ---
 
-<Document title={ui.search} description={ui.searchDescription} contentLanguage={contentLanguage} alternates={alternates}>
+<Document title={ui.search} description={ui.searchDescription} contentLanguage={contentLanguage} kind="search" alternates={alternates} noindex>
   <SearchPage contentLanguage={contentLanguage} />
 </Document>

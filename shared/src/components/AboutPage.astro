@@ -1,0 +1,14 @@
+---
+import { siteConfig, ui, uiLocale } from '../lib/site'
+---
+
+<section class="shell publume-page publume-about" lang={uiLocale} data-pagefind-ignore>
+  <header class="publume-page-header"><p>{siteConfig.name}</p><h1>{ui.about}</h1><p>{siteConfig.description}</p></header>
+  <dl class="publume-facts">
+    <div><dt>{ui.publisher}</dt><dd>{siteConfig.publisherName}</dd></div>
+    <div><dt>{ui.author}</dt><dd>{siteConfig.authorName}</dd></div>
+    <div><dt>{ui.automation}</dt><dd>{siteConfig.aiDisclosure}</dd></div>
+    {siteConfig.showSources && <div><dt>{ui.sources}</dt><dd>{ui.sourceTransparency}</dd></div>}
+  </dl>
+  {siteConfig.contactUrl && <p class="publume-contact"><a href={siteConfig.contactUrl} rel="me">{ui.contact} →</a></p>}
+</section>

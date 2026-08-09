@@ -8,7 +8,7 @@ import { languageTopicsPath, siteConfig, textDirection, ui } from '../../lib/sit
 export async function getStaticPaths() {
   const articles = await getCollection('articles')
   const contentLanguage = siteConfig.defaultContentLanguage
-  const groups = topicsForLanguage(articles, contentLanguage)
+  const groups = siteConfig.showTopics ? topicsForLanguage(articles, contentLanguage) : []
   return [
     { params: { topic: undefined }, props: { articles, contentLanguage } },
     ...groups.map((group) => ({
@@ -24,17 +24,29 @@ type Props = {
   topicId?: string
 }
 const { articles, contentLanguage, topicId } = Astro.props
-const groups = topicsForLanguage(articles, contentLanguage)
+const groups = siteConfig.showTopics ? topicsForLanguage(articles, contentLanguage) : []
 const selected = topicId ? groups.find((group) => group.topic.id === topicId) : undefined
-const alternates = siteConfig.outputLanguages.flatMap((language) => {
-  if (topicId && !topicsForLanguage(articles, language).some((group) => group.topic.id === topicId)) return []
-  return [
-    { language, href: new URL(languageTopicsPath(language, topicId), Astro.site ?? 'https://example.invalid/').href },
-  ]
-})
+const alternates =
+  siteConfig.showTopics && Astro.site
+    ? siteConfig.outputLanguages.flatMap((language) => {
+        if (topicId && !topicsForLanguage(articles, language).some((group) => group.topic.id === topicId)) return []
+        return [
+          {
+            language,
+            href: new URL(languageTopicsPath(language, topicId), Astro.site).href,
+          },
+        ]
+      })
+    : []
 ---
 
-<Document title={selected?.topic.label ?? ui.topics} contentLanguage={contentLanguage} alternates={alternates}>
+<Document
+  title={selected?.topic.label ?? ui.topics}
+  contentLanguage={contentLanguage}
+  kind="collection"
+  alternates={alternates}
+  noindex={!siteConfig.showTopics}
+>
   <div lang={contentLanguage} dir={textDirection(contentLanguage)}>
     <TopicsPage groups={groups} contentLanguage={contentLanguage} selected={selected} />
   </div>

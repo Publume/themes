@@ -2,6 +2,7 @@ import { defineCollection } from 'astro:content'
 import { glob } from 'astro/loaders'
 import { z } from 'astro/zod'
 import { topicIdForLabel } from './lib/topics'
+import { httpUrlSchema } from './lib/url'
 
 const topicId = z.string().regex(/^[a-z0-9][a-z0-9-]{0,79}$/)
 
@@ -17,7 +18,7 @@ const articles = defineCollection({
       score: z.number().min(0).max(1).optional(),
       topics: z.array(z.string().min(1)).default([]),
       topicIds: z.array(topicId).optional(),
-      sourceUrls: z.array(z.url()).min(1),
+      sourceUrls: z.array(httpUrlSchema).min(1),
     })
     .transform((article, context) => {
       if (article.topicIds && article.topicIds.length !== article.topics.length) {

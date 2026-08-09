@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content'
+import SourcesPage from '../../components/SourcesPage.astro'
+import Document from '../../layouts/Document.astro'
+import { languageSourcesPath, siteConfig, textDirection, ui } from '../../lib/site'
+import { sourcesForLanguage } from '../../lib/sources'
+
+export function getStaticPaths() {
+  if (!siteConfig.showSources) return []
+  return siteConfig.outputLanguages
+    .filter((language) => language !== siteConfig.defaultContentLanguage)
+    .map((language) => ({ params: { language }, props: { contentLanguage: language } }))
+}
+
+type Props = { contentLanguage: string }
+const { contentLanguage } = Astro.props
+const sources = sourcesForLanguage(await getCollection('articles'), contentLanguage)
+const alternates = Astro.site
+  ? siteConfig.outputLanguages.map((language) => ({
+      language,
+      href: new URL(languageSourcesPath(language), Astro.site).href,
+    }))
+  : []
+---
+
+<Document title={ui.sources} description={ui.sourceTransparency} contentLanguage={contentLanguage} kind="collection" alternates={alternates}>
+  <div lang={contentLanguage} dir={textDirection(contentLanguage)}>
+    <SourcesPage sources={sources} contentLanguage={contentLanguage} />
+  </div>
+</Document>

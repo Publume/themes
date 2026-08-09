@@ -3,6 +3,7 @@ export type PageMessages = {
   readonly search: string
   readonly about: string
   readonly articleCount: string
+  readonly articleCountOne?: string
   readonly previousPage: string
   readonly nextPage: string
   readonly page: string
@@ -59,6 +60,7 @@ export const pageMessages = {
     search: 'Search',
     about: 'About',
     articleCount: '{count} articles',
+    articleCountOne: '{count} article',
     previousPage: 'Previous',
     nextPage: 'Next',
     page: 'Page',

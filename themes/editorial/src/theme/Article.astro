@@ -1,18 +1,27 @@
 ---
+import ArticleDisclosure from '../components/ArticleDisclosure.astro'
+import ArticleSources from '../components/ArticleSources.astro'
 import type { Article } from '../lib/articles'
-import { formatDate, siteConfig, ui } from '../lib/site'
+import { formatDate, languageHomePath, siteConfig, ui, uiLocale } from '../lib/site'
 
 type Props = { article: Article }
 const { article } = Astro.props
 ---
 
-<article class="article shell">
+<article class="article">
   <header class="article-header">
-    <div class="article-meta"><time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt, article.data.language)}</time></div>
-    <h1>{article.data.title}</h1><p class="article-summary">{article.data.summary}</p>
-    {siteConfig.showTopics && article.data.topics.length > 0 && <ul class="topic-list" aria-label={ui.topics}>{article.data.topics.map((topic) => <li>{topic}</li>)}</ul>}
+    <div class="shell article-cover">
+      <div class="article-topline"><a class="back-link" lang={uiLocale} href={languageHomePath(article.data.language)}>← {ui.backToHome}</a><div class="article-meta"><time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt, article.data.language)}</time>{siteConfig.showScore && article.data.score !== undefined && <span class="publume-score" lang={uiLocale}>{ui.relevance} {Math.round(article.data.score * 100)}</span>}</div></div>
+      <div class="article-title"><p class="eyebrow" lang={uiLocale}>{ui.published}</p><h1>{article.data.title}</h1><p class="article-summary">{article.data.summary}</p>
+        {siteConfig.showTopics && article.data.topics.length > 0 && <ul class="topic-list">{article.data.topics.map((topic) => <li>{topic}</li>)}</ul>}
+      </div>
+    </div>
   </header>
-  <div class="article-body"><slot /></div>
-  {siteConfig.showSources && <aside class="sources" aria-labelledby="sources-heading"><p class="eyebrow">{ui.sources}</p><h2 id="sources-heading">{ui.sources}</h2><ol>{article.data.sourceUrls.map((url) => <li><a href={url} rel="noopener noreferrer">{new URL(url).hostname}</a></li>)}</ol></aside>}
-  <aside class="disclosure" aria-label={ui.disclosure}><strong>{ui.disclosure}</strong><p>{siteConfig.aiDisclosure}</p></aside>
+  <div class="shell article-layout">
+    <div class="article-body"><slot /></div>
+    <aside class="evidence-rail">
+      {siteConfig.showSources && <ArticleSources urls={article.data.sourceUrls} label={ui.sources} />}
+      <ArticleDisclosure label={ui.disclosure} text={siteConfig.aiDisclosure} />
+    </aside>
+  </div>
 </article>

@@ -3,13 +3,13 @@ import FooterAttribution from '../components/FooterAttribution.astro'
 import FooterNavigation from '../components/FooterNavigation.astro'
 import LanguageSwitcher from '../components/LanguageSwitcher.astro'
 import PrimaryNavigation from '../components/PrimaryNavigation.astro'
-import { languageHomePath, siteConfig, ui } from '../lib/site'
+import { languageHomePath, siteConfig, ui, uiLocale } from '../lib/site'
 
 type Props = { contentLanguage: string }
 const { contentLanguage } = Astro.props
 ---
 
-<div class="system-bar"><div class="shell system-inner"><span><i aria-hidden="true"></i> {ui.live}</span><span>{ui.sources} · {ui.published}</span></div></div>
-<header class="site-header"><div class="shell header-inner"><a class="brand" href={languageHomePath(contentLanguage)} aria-label={`${siteConfig.name} · ${ui.home}`}><span class="brand-mark" aria-hidden="true"><b></b><b></b><b></b></span><span>{siteConfig.name}</span></a><PrimaryNavigation contentLanguage={contentLanguage} /><LanguageSwitcher contentLanguage={contentLanguage} /></div></header>
+<div class="system-bar" lang={uiLocale}><div class="shell system-inner"><span><i aria-hidden="true"></i> {ui.live}</span><span>{ui.monitoring} · {siteConfig.showSources ? ui.sources : ui.published}</span></div></div>
+<header lang={uiLocale} class="site-header"><div class="shell header-inner"><a class="brand" href={languageHomePath(contentLanguage)} aria-label={`${siteConfig.name} · ${ui.home}`}><span class="brand-mark" aria-hidden="true" lang="en">B</span><span>{siteConfig.name}</span></a><p class="header-descriptor">{siteConfig.tagline}</p><div class="desktop-navigation"><PrimaryNavigation contentLanguage={contentLanguage} /></div><div class="desktop-language"><LanguageSwitcher contentLanguage={contentLanguage} /></div><details class="mobile-menu"><summary>{ui.primaryNavigation}<span aria-hidden="true">＋</span></summary><div class="mobile-menu-panel"><PrimaryNavigation contentLanguage={contentLanguage} /><LanguageSwitcher contentLanguage={contentLanguage} /></div></details></div></header>
 <main id="main-content"><slot /></main>
-<footer class="site-footer"><div class="shell footer-grid"><div><p class="footer-label">{ui.published}</p><strong>{siteConfig.name}</strong></div><div><p class="footer-label">{ui.disclosure}</p><p>{siteConfig.aiDisclosure}</p></div><FooterAttribution className="footer-note" /></div><FooterNavigation contentLanguage={contentLanguage} /></footer>
+<footer lang={uiLocale} class="site-footer"><div class="shell footer-grid"><div><p class="footer-label">{ui.published}</p><strong>{siteConfig.name}</strong><p>{siteConfig.description}</p></div><FooterAttribution className="footer-note" /></div><FooterNavigation contentLanguage={contentLanguage} /></footer>

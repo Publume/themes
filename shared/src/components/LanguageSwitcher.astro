@@ -1,5 +1,5 @@
 ---
-import { languageHomePath, languageName, siteConfig, ui } from '../lib/site'
+import { languageHomePath, languageName, siteConfig, ui, uiLocale } from '../lib/site'
 
 type Props = { contentLanguage: string }
 const { contentLanguage } = Astro.props
@@ -11,7 +11,7 @@ const { contentLanguage } = Astro.props
       {siteConfig.outputLanguages.map((language) => (
         <a
           href={languageHomePath(language)}
-          lang={language}
+          lang={uiLocale}
           aria-current={language === contentLanguage ? 'page' : undefined}
         >
           {languageName(language)}

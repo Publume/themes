@@ -1,5 +1,5 @@
 ---
-import { sitePath, textDirection, ui } from '../lib/site'
+import { sitePath, textDirection, ui, uiLocale } from '../lib/site'
 
 type Props = { contentLanguage: string }
 const { contentLanguage } = Astro.props
@@ -8,8 +8,15 @@ const uiScriptPath = sitePath('/pagefind/pagefind-ui.js')
 const uiStylePath = sitePath('/pagefind/pagefind-ui.css')
 ---
 
-<section class="shell publume-page" lang={contentLanguage} dir={textDirection(contentLanguage)} data-pagefind-ignore>
-  <header class="publume-page-header"><h1>{ui.search}</h1><p>{ui.searchDescription}</p></header>
+<section
+  class="shell publume-page publume-search"
+  lang={contentLanguage}
+  dir={textDirection(contentLanguage)}
+  data-pagefind-ignore
+>
+  <header class="publume-page-header publume-page-header-plain" lang={uiLocale}>
+    <h1>{ui.search}</h1><p>{ui.searchDescription}</p>
+  </header>
   <link href={uiStylePath} rel="stylesheet" />
   <div id="publume-search" class="publume-search-results"></div>
   <script src={uiScriptPath} is:inline></script>

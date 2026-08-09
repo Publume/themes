@@ -1,0 +1,18 @@
+---
+import { uiLocale } from '../lib/site'
+
+type Props = {
+  label: string
+  text: string
+  className?: string
+  headingId?: string
+  headingClass?: string
+}
+
+const { label, text, className = 'disclosure', headingId = 'disclosure-heading', headingClass } = Astro.props
+---
+
+<section class:list={[className, 'publume-article-disclosure']} lang={uiLocale} aria-labelledby={headingId}>
+  <strong id={headingId} class:list={['publume-evidence-heading', headingClass]}>{label}</strong>
+  <p>{text}</p>
+</section>

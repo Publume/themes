@@ -3,29 +3,29 @@ import FooterAttribution from '../components/FooterAttribution.astro'
 import FooterNavigation from '../components/FooterNavigation.astro'
 import LanguageSwitcher from '../components/LanguageSwitcher.astro'
 import PrimaryNavigation from '../components/PrimaryNavigation.astro'
-import { languageHomePath, siteConfig, ui } from '../lib/site'
+import { languageHomePath, siteConfig, ui, uiLocale } from '../lib/site'
 
 type Props = { contentLanguage: string }
 const { contentLanguage } = Astro.props
 ---
 
-<header class="site-header">
+<header lang={uiLocale} class="site-header">
   <div class="ledger-rule" aria-hidden="true"></div>
   <div class="shell header-grid">
     <p class="edition-label">{ui.monitoring} · {ui.live}</p>
     <a class="brand" href={languageHomePath(contentLanguage)} aria-label={`${siteConfig.name} · ${ui.home}`}>{siteConfig.name}</a>
-    <LanguageSwitcher contentLanguage={contentLanguage} />
+    <div class="header-tools"><span>{ui.published}</span><div class="desktop-language"><LanguageSwitcher contentLanguage={contentLanguage} /></div></div>
+    <details class="mobile-menu"><summary>{ui.primaryNavigation}<span aria-hidden="true">＋</span></summary><div class="mobile-menu-panel"><PrimaryNavigation contentLanguage={contentLanguage} /><LanguageSwitcher contentLanguage={contentLanguage} /></div></details>
   </div>
   <div class="shell navigation-row">
-    <p>{siteConfig.tagline}</p>
-    <PrimaryNavigation contentLanguage={contentLanguage} />
+    <p>{siteConfig.publisherName} / {siteConfig.tagline}</p>
+    <div class="desktop-navigation"><PrimaryNavigation contentLanguage={contentLanguage} /></div>
   </div>
 </header>
 <main id="main-content"><slot /></main>
-<footer class="site-footer">
+<footer lang={uiLocale} class="site-footer">
   <div class="shell footer-grid">
     <strong>{siteConfig.name}</strong>
-    <div><p class="footer-label">{ui.disclosure}</p><p>{siteConfig.aiDisclosure}</p></div>
     <FooterAttribution />
   </div>
   <FooterNavigation contentLanguage={contentLanguage} />

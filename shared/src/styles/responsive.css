@@ -1,0 +1,85 @@
+@layer publume-page-layout {
+  .publume-page:is(.publume-about, .publume-search) {
+    max-width: 56rem;
+  }
+
+  .publume-page
+    > :where(
+      .publume-page-header,
+      .publume-article-list,
+      .publume-topic-directory,
+      .publume-source-directory,
+      .publume-search-results,
+      .publume-facts,
+      .publume-pagination,
+      .publume-empty,
+      .publume-contact
+    ) {
+    width: 100%;
+    max-width: none;
+    margin-block: 0;
+    margin-inline: 0;
+  }
+
+  .publume-page-header-plain > h1,
+  .publume-page-header-plain > h1 + p {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+}
+
+@layer publume-accessibility {
+  article :where(h1, h2, h3) {
+    max-width: none;
+    overflow-wrap: break-word;
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 58rem) {
+    .site-header .header-inner,
+    .site-header .utility-bar,
+    .site-header .utility-row,
+    .site-header .navigation-row {
+      flex-wrap: wrap;
+    }
+
+    .publume-primary-navigation,
+    .publume-footer-navigation,
+    .language-switcher {
+      display: flex;
+      max-width: 100%;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+      scrollbar-width: thin;
+    }
+
+    .publume-primary-navigation {
+      order: 3;
+      width: 100%;
+      flex-basis: 100%;
+      grid-column: 1 / -1;
+    }
+
+    .publume-primary-navigation a,
+    .publume-footer-navigation a,
+    .language-switcher a {
+      display: inline-flex;
+      flex: 0 0 auto;
+    }
+
+    .mobile-menu-panel .publume-primary-navigation,
+    .mobile-menu-panel .language-switcher {
+      display: grid;
+      width: auto;
+      max-width: none;
+      flex-basis: auto;
+      overflow: visible;
+    }
+
+    .mobile-menu-panel .publume-primary-navigation {
+      order: initial;
+      grid-column: auto;
+    }
+  }
+}

@@ -1,0 +1,29 @@
+---
+import { formatArticleCount, siteConfig, ui, uiLocale } from '../lib/site'
+import type { SourceGroup } from '../lib/sources'
+
+type Props = { sources: readonly SourceGroup[]; contentLanguage: string }
+const { sources, contentLanguage } = Astro.props
+---
+
+<section class="shell publume-page publume-sources" lang={uiLocale} data-pagefind-ignore>
+  <header class="publume-page-header">
+    <p>{siteConfig.name}</p>
+    <h1>{ui.sources}</h1>
+    <p>{ui.sourceTransparency}</p>
+  </header>
+  {sources.length > 0 ? (
+    <ul class="publume-source-directory">
+      {sources.map((source) => (
+        <li>
+          <a href={source.href} rel="noopener noreferrer">
+            <strong>{source.hostname}</strong>
+            <span>{formatArticleCount(source.articleCount, contentLanguage)}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p class="publume-empty">{ui.sourceTransparency}</p>
+  )}
+</section>

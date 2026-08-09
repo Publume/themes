@@ -1,0 +1,23 @@
+---
+import type { AdPlacementId } from '../lib/presentation'
+import { siteConfig, ui } from '../lib/site'
+
+type Props = { placement: AdPlacementId }
+const { placement } = Astro.props
+const ads = siteConfig.presentation.ads
+const slot = ads.provider === 'adsense' ? ads.slots[placement] : undefined
+---
+
+{slot && ads.provider === 'adsense' && (
+  <aside class="publume-ad-slot" data-ad-placement={placement} aria-label={ui.sponsor}>
+    <ins
+      class="adsbygoogle"
+      style="display:block"
+      data-ad-client={ads.publisherId}
+      data-ad-slot={slot}
+      data-ad-format="auto"
+      data-full-width-responsive="true"
+    ></ins>
+    <script is:inline>(window.adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </aside>
+)}

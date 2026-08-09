@@ -1,17 +1,17 @@
 ---
 import type { TopicGroup } from '../lib/articles'
-import { languageTopicsPath, ui } from '../lib/site'
+import { formatArticleCount, languageTopicsPath, siteConfig, ui, uiLocale } from '../lib/site'
 import ArticleList from './ArticleList.astro'
 
 type Props = { groups: readonly TopicGroup[]; contentLanguage: string; selected?: TopicGroup }
 const { groups, contentLanguage, selected } = Astro.props
 ---
 
-<section class="shell publume-page" data-pagefind-ignore>
-  <header class="publume-page-header">
-    {selected && <a class="publume-back-link" href={languageTopicsPath(contentLanguage)}>← {ui.topics}</a>}
-    <h1>{selected?.topic.label ?? ui.topics}</h1>
-    <p>{selected ? ui.articleCount.replace('{count}', new Intl.NumberFormat(contentLanguage).format(selected.articles.length)) : ui.sourceTransparency}</p>
+<section class="shell publume-page publume-topics" data-pagefind-ignore>
+  <header class:list={['publume-page-header', !selected && 'publume-page-header-plain']}>
+    {selected && <a class="publume-back-link" lang={uiLocale} href={languageTopicsPath(contentLanguage)}>← {ui.topics}</a>}
+    <h1 lang={selected ? contentLanguage : uiLocale}>{selected?.topic.label ?? ui.topics}</h1>
+    <p lang={uiLocale}>{selected ? formatArticleCount(selected.articles.length, contentLanguage) : siteConfig.description}</p>
   </header>
   {selected ? (
     <ArticleList articles={selected.articles} contentLanguage={contentLanguage} />
@@ -21,12 +21,12 @@ const { groups, contentLanguage, selected } = Astro.props
         <li>
           <a href={languageTopicsPath(contentLanguage, group.topic.id)}>
             <strong>{group.topic.label}</strong>
-            <span>{ui.articleCount.replace('{count}', new Intl.NumberFormat(contentLanguage).format(group.articles.length))}</span>
+            <span lang={uiLocale}>{formatArticleCount(group.articles.length, contentLanguage)}</span>
           </a>
         </li>
       ))}
     </ul>
   ) : (
-    <p class="publume-empty">{ui.noTopics}</p>
+    <p class="publume-empty" lang={uiLocale}>{ui.noTopics}</p>
   )}
 </section>

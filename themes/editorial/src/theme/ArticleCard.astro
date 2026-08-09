@@ -1,0 +1,21 @@
+---
+import type { Article } from '../lib/articles'
+import { topicsForArticle } from '../lib/articles'
+import { articlePath, formatDate, languageTopicsPath, siteConfig, ui, uiLocale } from '../lib/site'
+
+type Props = { article: Article; contentLanguage: string }
+const { article, contentLanguage } = Astro.props
+---
+
+<article class="publume-article-card">
+  <div class="publume-card-meta">
+    <time datetime={article.data.publishedAt.toISOString()}>{formatDate(article.data.publishedAt, contentLanguage)}</time>
+    {siteConfig.showScore && article.data.score !== undefined && <span class="publume-score" lang={uiLocale}>{ui.relevance} {Math.round(article.data.score * 100)}</span>}
+  </div>
+  <h2><a href={articlePath(article.id, contentLanguage)}>{article.data.title}</a></h2>
+  <p>{article.data.summary}</p>
+  <div class="publume-card-footer">
+    {siteConfig.showTopics && article.data.topics.length > 0 && <ul class="publume-topic-links">{topicsForArticle(article).map((topic) => <li><a href={languageTopicsPath(contentLanguage, topic.id)}>{topic.label}</a></li>)}</ul>}
+    <a class="publume-card-link" lang={uiLocale} href={articlePath(article.id, contentLanguage)}>{ui.readArticle} <span aria-hidden="true">↗</span></a>
+  </div>
+</article>

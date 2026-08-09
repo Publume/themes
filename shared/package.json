@@ -20,8 +20,10 @@
     "check": "bun run quality && bun run typecheck && bun run build"
   },
   "dependencies": {
+    "astro": "7.1.6",
     "@astrojs/rss": "4.0.19",
     "@astrojs/sitemap": "3.7.3",
+    "zod": "4.4.3",
     "@fontsource-variable/noto-naskh-arabic": "5.3.0",
     "@fontsource-variable/noto-sans": "5.3.0",
     "@fontsource-variable/noto-sans-arabic": "5.3.0",
@@ -38,8 +40,7 @@
     "@fontsource-variable/noto-serif-kr": "5.3.0",
     "@fontsource-variable/noto-serif-sc": "5.3.0",
     "@fontsource-variable/noto-serif-tc": "5.3.0",
-    "@fontsource-variable/noto-serif-thai": "5.3.0",
-    "astro": "7.1.6"
+    "@fontsource-variable/noto-serif-thai": "5.3.0"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
