@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, preview]
   pull_request:
 
 permissions:
@@ -26,6 +26,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: Publume/core
+          ref: ${{ github.event_name == 'pull_request' && github.base_ref || github.ref_name }}
           path: .contract/core
       - name: Install Core dependencies
         run: bun install --frozen-lockfile --cwd .contract/core
