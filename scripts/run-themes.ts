@@ -136,6 +136,34 @@ const archiveFixtures = [
   },
 ] as const
 
+const expectedPublishedTotal = archiveFixtures.length + 1
+const expectedSourceCount = new Set(
+  ['https://github.com/Publume/core', ...archiveFixtures.map((fixture) => fixture.sourceUrl)].map(
+    (url) => new URL(url).hostname,
+  ),
+).size
+const publishedTotalMarkers: Readonly<Record<string, string>> = {
+  arcade: `<dt>Published</dt><dd>${expectedPublishedTotal}</dd>`,
+  atlas: `<dt>Published</dt><dd>${expectedPublishedTotal}</dd>`,
+  briefing: `<dt>Published</dt><dd>${expectedPublishedTotal}</dd>`,
+  editorial: `<p class="cover-count">${expectedPublishedTotal} articles</p>`,
+  laboratory: `<dt>Published</dt><dd>${expectedPublishedTotal}</dd>`,
+  ledger: `<p class="label">Published</p><h2 id="latest-heading">Latest</h2><span>${expectedPublishedTotal}</span>`,
+  orbit: `<dt>Published</dt><dd>${expectedPublishedTotal}</dd>`,
+  scoreboard: `<span>Published</span><strong>${expectedPublishedTotal}</strong>`,
+  studio: `<div class="hero-index" aria-hidden="true">${expectedPublishedTotal}</div>`,
+  terminal: `<dt>Published</dt><dd>${String(expectedPublishedTotal).padStart(3, '0')}</dd>`,
+}
+const sourceCountMarkers: Readonly<Record<string, string>> = {
+  arcade: `<dt>Sources</dt><dd>${expectedSourceCount}</dd>`,
+  atlas: `<dt>Sources</dt><dd>${expectedSourceCount}</dd>`,
+  briefing: `<dt>Sources</dt><dd>${expectedSourceCount}</dd>`,
+  laboratory: `<dt>Sources</dt><dd>${expectedSourceCount}</dd>`,
+  ledger: `<dt>Sources</dt><dd>${expectedSourceCount}</dd>`,
+  orbit: `<dt>Sources</dt><dd>${expectedSourceCount}</dd>`,
+  scoreboard: `<span>Sources</span><strong>${expectedSourceCount}</strong>`,
+  terminal: `<dt>Sources</dt><dd>${String(expectedSourceCount).padStart(3, '0')}</dd>`,
+}
 const expectedHtmlCount = 36 + new Set(['publume', ...archiveFixtures.flatMap((fixture) => fixture.topics)]).size
 
 const keepFixture = Bun.argv.includes('--keep-fixture')
@@ -156,7 +184,7 @@ async function filesBelow(directory: string): Promise<string[]> {
   return files
 }
 
-async function assertBuiltSite(directory: string, adsEnabled: boolean): Promise<void> {
+async function assertBuiltSite(directory: string, themeName: string, adsEnabled: boolean): Promise<void> {
   const dist = path.join(directory, 'dist')
   const topicId = topicIdForLabel('publume')
   const required = [
@@ -196,6 +224,12 @@ async function assertBuiltSite(directory: string, adsEnabled: boolean): Promise<
   const homeArticlePaths = new Set([...home.matchAll(/\bhref="(\/en\/[^/"?#]+\/)"/g)].map((match) => match[1]))
   if (homeArticlePaths.size !== expectedHomeArticleCount)
     throw new Error(`Home page has ${homeArticlePaths.size} articles; expected ${expectedHomeArticleCount}`)
+  const publishedTotalMarker = publishedTotalMarkers[themeName]
+  if (publishedTotalMarker && !home.includes(publishedTotalMarker))
+    throw new Error(`Home page does not show the full published total for theme ${themeName}`)
+  const sourceCountMarker = sourceCountMarkers[themeName]
+  if (sourceCountMarker && !home.includes(sourceCountMarker))
+    throw new Error(`Home page does not show the full source count for theme ${themeName}`)
 
   const search = await readFile(path.join(dist, 'search/index.html'), 'utf8')
   if (
@@ -618,7 +652,7 @@ for (const entry of entries) {
       const exitCode = await process.exited
       if (exitCode !== 0) throw new Error(`Theme ${entry.name} failed with exit code ${exitCode}`)
     }
-    await assertBuiltSite(directory, false)
+    await assertBuiltSite(directory, entry.name, false)
     if (keepFixture) {
       console.log(`Kept visual fixture at ${directory}`)
       continue
@@ -626,7 +660,7 @@ for (const entry of entries) {
     if (entry.name === 'editorial') {
       await enableAdsense(directory)
       await buildFixture(directory, `Theme ${entry.name} AdSense fixture`)
-      await assertBuiltSite(directory, true)
+      await assertBuiltSite(directory, entry.name, true)
     }
 
     await disableOptionalMetadata(directory)

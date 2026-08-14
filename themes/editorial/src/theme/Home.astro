@@ -2,12 +2,12 @@
 import type { Article } from '../lib/articles'
 import { articlePath, formatArticleCount, formatDate, siteConfig, ui, uiLocale } from '../lib/site'
 
-type Props = { articles: readonly Article[]; contentLanguage: string }
-const { articles, contentLanguage } = Astro.props
+type Props = { articles: readonly Article[]; total: number; sourceCount: number; contentLanguage: string }
+const { articles, total, contentLanguage } = Astro.props
 const [featured, ...remaining] = articles
 const headlines = remaining.slice(0, 3)
 const moreStories = remaining.slice(3)
-const articleCount = formatArticleCount(articles.length, contentLanguage)
+const articleCount = formatArticleCount(total, contentLanguage)
 ---
 
 <section class="shell cover-intro" aria-labelledby="hero-title">

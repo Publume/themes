@@ -2,7 +2,7 @@
 import type { Article } from '../lib/articles'
 import { articlePath, formatDate, siteConfig, ui, uiLocale } from '../lib/site'
 
-type Props = { articles: readonly Article[]; contentLanguage: string }
+type Props = { articles: readonly Article[]; total: number; sourceCount: number; contentLanguage: string }
 const { articles, contentLanguage } = Astro.props
 const [lead, ...remaining] = articles
 ---

@@ -2,18 +2,15 @@
 import type { Article } from '../lib/articles'
 import { articlePath, formatDate, siteConfig, ui, uiLocale } from '../lib/site'
 
-type Props = { articles: readonly Article[]; contentLanguage: string }
-const { articles, contentLanguage } = Astro.props
+type Props = { articles: readonly Article[]; total: number; sourceCount: number; contentLanguage: string }
+const { articles, total, sourceCount, contentLanguage } = Astro.props
 const [currentTransmission, ...missionQueue] = articles
-const sourceCount = siteConfig.showSources
-  ? new Set(articles.flatMap((article) => article.data.sourceUrls.map((url) => new URL(url).hostname))).size
-  : 0
 ---
 
 <section class="orbit-hero shell" lang={uiLocale}>
   <div class="hero-signal"><p class="orbit-label"><i aria-hidden="true"></i>{ui.live} · {ui.monitoring}</p><span>{ui.mode} / {ui.live}</span></div>
   <h1>{siteConfig.tagline}</h1>
-  <div class="hero-lower"><div><p>{siteConfig.description}</p>{(siteConfig.newsletterUrl || siteConfig.sponsorUrl) && <div class="hero-actions">{siteConfig.newsletterUrl && <a class="button primary" href={siteConfig.newsletterUrl}>{ui.newsletter}</a>}{siteConfig.sponsorUrl && <a class="button" href={siteConfig.sponsorUrl}>{ui.sponsor}</a>}</div>}</div><div class="orbit-console"><span class="planet" aria-hidden="true"><i></i></span><dl><div><dt>{ui.published}</dt><dd>{String(articles.length).padStart(2, '0')}</dd></div>{siteConfig.showSources && <div><dt>{ui.sources}</dt><dd>{String(sourceCount).padStart(2, '0')}</dd></div>}</dl></div></div>
+  <div class="hero-lower"><div><p>{siteConfig.description}</p>{(siteConfig.newsletterUrl || siteConfig.sponsorUrl) && <div class="hero-actions">{siteConfig.newsletterUrl && <a class="button primary" href={siteConfig.newsletterUrl}>{ui.newsletter}</a>}{siteConfig.sponsorUrl && <a class="button" href={siteConfig.sponsorUrl}>{ui.sponsor}</a>}</div>}</div><div class="orbit-console"><span class="planet" aria-hidden="true"><i></i></span><dl><div><dt>{ui.published}</dt><dd>{String(total).padStart(2, '0')}</dd></div>{siteConfig.showSources && <div><dt>{ui.sources}</dt><dd>{String(sourceCount).padStart(2, '0')}</dd></div>}</dl></div></div>
 </section>
 <section class="mission-feed shell" aria-labelledby="latest-heading">
   <div class="section-heading" lang={uiLocale}><div><p class="orbit-label">{ui.published}</p><h2 id="latest-heading">{ui.latest}</h2></div><span>{ui.mode} / {ui.live}</span></div>

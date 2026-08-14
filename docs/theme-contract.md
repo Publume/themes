@@ -115,9 +115,10 @@ never mixed in a single listing.
 Every composed site provides the same reader-facing route capabilities: a latest
 index, article pages, paginated archives, topic indexes and topic pages, a
 language-scoped source directory, static multilingual search, an about page, a
-404 page, RSS, sitemap output, and `robots.txt`. The homepage receives only the
-latest twelve articles; the archive owns complete historical browsing. Visual
-overlays may change how these routes look, but must not remove or rename them.
+404 page, RSS, sitemap output, and `robots.txt`. The homepage receives the latest
+twelve articles plus the language-scoped article and source totals before that
+limit is applied; the archive owns complete historical browsing. Visual overlays
+may change how these routes look, but must not remove or rename them.
 
 The shared document layout assigns schema.org types by page family, emits
 canonical and language-alternate links, and gives every indexable page Open

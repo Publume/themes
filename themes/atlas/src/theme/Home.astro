@@ -2,18 +2,15 @@
 import type { Article } from '../lib/articles'
 import { articlePath, formatDate, siteConfig, ui, uiLocale } from '../lib/site'
 
-type Props = { articles: readonly Article[]; contentLanguage: string }
-const { articles, contentLanguage } = Astro.props
-const sourceCount = siteConfig.showSources
-  ? new Set(articles.flatMap((article) => article.data.sourceUrls.map((url) => new URL(url).hostname))).size
-  : 0
+type Props = { articles: readonly Article[]; total: number; sourceCount: number; contentLanguage: string }
+const { articles, total, sourceCount, contentLanguage } = Astro.props
 ---
 
 <section class="atlas-hero shell" lang={uiLocale}>
   <div class="atlas-title"><p class="map-label">{ui.monitoring} · {contentLanguage}</p><h1>{siteConfig.tagline}</h1></div>
   <div class="atlas-legend">
     <p>{siteConfig.description}</p>
-    <dl><div><dt>{ui.published}</dt><dd>{String(articles.length).padStart(2, '0')}</dd></div>{siteConfig.showSources && <div><dt>{ui.sources}</dt><dd>{String(sourceCount).padStart(2, '0')}</dd></div>}<div><dt>{ui.monitoring}</dt><dd>{ui.live}</dd></div></dl>
+    <dl><div><dt>{ui.published}</dt><dd>{String(total).padStart(2, '0')}</dd></div>{siteConfig.showSources && <div><dt>{ui.sources}</dt><dd>{String(sourceCount).padStart(2, '0')}</dd></div>}<div><dt>{ui.monitoring}</dt><dd>{ui.live}</dd></div></dl>
     {(siteConfig.newsletterUrl || siteConfig.sponsorUrl) && <div class="hero-actions">{siteConfig.newsletterUrl && <a class="button primary" href={siteConfig.newsletterUrl}>{ui.newsletter}</a>}{siteConfig.sponsorUrl && <a class="button" href={siteConfig.sponsorUrl}>{ui.sponsor}</a>}</div>}
   </div>
 </section>
