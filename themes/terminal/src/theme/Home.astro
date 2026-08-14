@@ -2,11 +2,8 @@
 import type { Article } from '../lib/articles'
 import { articlePath, formatDate, siteConfig, ui, uiLocale } from '../lib/site'
 
-type Props = { articles: readonly Article[]; contentLanguage: string }
-const { articles, contentLanguage } = Astro.props
-const sourceCount = siteConfig.showSources
-  ? new Set(articles.flatMap((article) => article.data.sourceUrls.map((url) => new URL(url).hostname))).size
-  : 0
+type Props = { articles: readonly Article[]; total: number; sourceCount: number; contentLanguage: string }
+const { articles, total, sourceCount, contentLanguage } = Astro.props
 ---
 
 <section class="terminal-hero shell" lang={uiLocale}>
@@ -20,7 +17,7 @@ const sourceCount = siteConfig.showSources
     </div>}
   </div>
   <dl class="terminal-metrics" aria-label={ui.latest}>
-    <div><dt>{ui.published}</dt><dd>{String(articles.length).padStart(3, '0')}</dd></div>
+    <div><dt>{ui.published}</dt><dd>{String(total).padStart(3, '0')}</dd></div>
     {siteConfig.showSources && <div><dt>{ui.sources}</dt><dd>{String(sourceCount).padStart(3, '0')}</dd></div>}
     <div><dt>{ui.mode}</dt><dd>{ui.live}</dd></div>
   </dl>

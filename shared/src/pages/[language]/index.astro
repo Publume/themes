@@ -4,6 +4,7 @@ import AdSlot from '../../components/AdSlot.astro'
 import Document from '../../layouts/Document.astro'
 import { articlesForLanguage, homeArticleLimit } from '../../lib/articles'
 import { languageHomePath, siteConfig, textDirection } from '../../lib/site'
+import { sourcesForLanguage } from '../../lib/sources'
 import Home from '../../theme/Home.astro'
 
 export function getStaticPaths() {
@@ -14,7 +15,9 @@ export function getStaticPaths() {
 
 type Props = { contentLanguage: string }
 const { contentLanguage } = Astro.props
-const articles = articlesForLanguage(await getCollection('articles'), contentLanguage)
+const allArticles = await getCollection('articles')
+const articles = articlesForLanguage(allArticles, contentLanguage)
+const sourceCount = sourcesForLanguage(allArticles, contentLanguage).length
 const alternates = Astro.site
   ? siteConfig.outputLanguages.map((language) => ({
       language,
@@ -25,7 +28,12 @@ const alternates = Astro.site
 
 <Document contentLanguage={contentLanguage} alternates={alternates} adPlacement="homeAfterFeed">
   <div lang={contentLanguage} dir={textDirection(contentLanguage)}>
-    <Home articles={articles.slice(0, homeArticleLimit)} contentLanguage={contentLanguage} />
+    <Home
+      articles={articles.slice(0, homeArticleLimit)}
+      total={articles.length}
+      sourceCount={sourceCount}
+      contentLanguage={contentLanguage}
+    />
     <AdSlot placement="homeAfterFeed" />
   </div>
 </Document>

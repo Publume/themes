@@ -489,7 +489,8 @@ for (const entry of entries.filter((item) => item.isDirectory())) {
   const articleCardPath = path.join(directory, 'src/theme/ArticleCard.astro')
   if (await Bun.file(articleCardPath).exists())
     assertAccessibleLanguageNames(`Theme ${marker.id} article card`, await Bun.file(articleCardPath).text())
-  if (home.includes('sourceCount') && !home.includes('siteConfig.showSources'))
+  const rendersSourceCount = /\{\s*(?:String\()?sourceCount\b/.test(home)
+  if (rendersSourceCount && !home.includes('siteConfig.showSources'))
     throw new Error(`Theme ${marker.id} home source metrics must honor showSources`)
   if (['briefing', 'terminal'].includes(marker.id)) {
     if (!shell.includes('siteConfig.showSources'))

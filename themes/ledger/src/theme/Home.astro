@@ -2,21 +2,18 @@
 import type { Article } from '../lib/articles'
 import { articlePath, formatDate, siteConfig, ui, uiLocale } from '../lib/site'
 
-type Props = { articles: readonly Article[]; contentLanguage: string }
-const { articles, contentLanguage } = Astro.props
+type Props = { articles: readonly Article[]; total: number; sourceCount: number; contentLanguage: string }
+const { articles, total, sourceCount, contentLanguage } = Astro.props
 const [lead, ...remaining] = articles
-const sourceCount = siteConfig.showSources
-  ? new Set(articles.flatMap((article) => article.data.sourceUrls.map((url) => new URL(url).hostname))).size
-  : 0
 ---
 
 <section class="ledger-overview shell" lang={uiLocale}>
-  <div class="overview-index"><span>{ui.latest}</span><b>{String(articles.length).padStart(2, '0')}</b></div>
+  <div class="overview-index"><span>{ui.latest}</span><b>{String(total).padStart(2, '0')}</b></div>
   <div class="overview-title"><p class="label">{ui.published} / {ui.monitoring}</p><h1>{siteConfig.tagline}</h1><p>{siteConfig.description}</p></div>
   <dl class="overview-stats">{siteConfig.showSources && <div><dt>{ui.sources}</dt><dd>{sourceCount}</dd></div>}<div><dt>{ui.mode}</dt><dd>{ui.live}</dd></div></dl>
 </section>
 <section class="ledger-feed shell" aria-labelledby="latest-heading">
-  <div class="ledger-heading" lang={uiLocale}><p class="label">{ui.published}</p><h2 id="latest-heading">{ui.latest}</h2><span>{String(articles.length).padStart(2, '0')}</span></div>
+  <div class="ledger-heading" lang={uiLocale}><p class="label">{ui.published}</p><h2 id="latest-heading">{ui.latest}</h2><span>{String(total).padStart(2, '0')}</span></div>
   {lead ? <>
     <article class="ledger-lead">
       <div class="lead-index"><span>01</span><time datetime={lead.data.publishedAt.toISOString()}>{formatDate(lead.data.publishedAt, contentLanguage)}</time></div>

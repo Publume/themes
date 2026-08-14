@@ -2,19 +2,16 @@
 import type { Article } from '../lib/articles'
 import { articlePath, formatDate, siteConfig, ui, uiLocale } from '../lib/site'
 
-type Props = { articles: readonly Article[]; contentLanguage: string }
-const { articles, contentLanguage } = Astro.props
+type Props = { articles: readonly Article[]; total: number; sourceCount: number; contentLanguage: string }
+const { articles, total, sourceCount, contentLanguage } = Astro.props
 const [lead, ...headlines] = articles
 const headlineSections = [
   { className: 'headline-list', articles: headlines.slice(0, 4), sequenceStart: 2 },
   { className: 'briefing-more', articles: headlines.slice(4), sequenceStart: 6 },
 ]
-const sourceCount = siteConfig.showSources
-  ? new Set(articles.flatMap((article) => article.data.sourceUrls.map((url) => new URL(url).hostname))).size
-  : 0
 ---
 
-<section class="briefing-overview shell" lang={uiLocale} aria-labelledby="briefing-title"><div class="overview-title"><p class="eyebrow">{ui.mode} / {ui.latest}</p><h1 id="briefing-title">{siteConfig.tagline}</h1></div><p class="overview-copy">{siteConfig.description}</p><dl class="briefing-stats" aria-label={ui.latest}><div><dt>{ui.published}</dt><dd>{String(articles.length).padStart(2,'0')}</dd></div>{siteConfig.showSources && <div><dt>{ui.sources}</dt><dd>{String(sourceCount).padStart(2,'0')}</dd></div>}<div><dt>{ui.mode}</dt><dd>{ui.live}</dd></div></dl>{(siteConfig.newsletterUrl || siteConfig.sponsorUrl) && <div class="hero-actions">{siteConfig.newsletterUrl && <a class="button primary" href={siteConfig.newsletterUrl}>{ui.newsletter}</a>}{siteConfig.sponsorUrl && <a class="button secondary" href={siteConfig.sponsorUrl}>{ui.sponsor}</a>}</div>}</section>
+<section class="briefing-overview shell" lang={uiLocale} aria-labelledby="briefing-title"><div class="overview-title"><p class="eyebrow">{ui.mode} / {ui.latest}</p><h1 id="briefing-title">{siteConfig.tagline}</h1></div><p class="overview-copy">{siteConfig.description}</p><dl class="briefing-stats" aria-label={ui.latest}><div><dt>{ui.published}</dt><dd>{String(total).padStart(2,'0')}</dd></div>{siteConfig.showSources && <div><dt>{ui.sources}</dt><dd>{String(sourceCount).padStart(2,'0')}</dd></div>}<div><dt>{ui.mode}</dt><dd>{ui.live}</dd></div></dl>{(siteConfig.newsletterUrl || siteConfig.sponsorUrl) && <div class="hero-actions">{siteConfig.newsletterUrl && <a class="button primary" href={siteConfig.newsletterUrl}>{ui.newsletter}</a>}{siteConfig.sponsorUrl && <a class="button secondary" href={siteConfig.sponsorUrl}>{ui.sponsor}</a>}</div>}</section>
 <section class="briefing-feed shell" aria-labelledby="latest-heading">
   <div class="section-heading" lang={uiLocale}><div><p class="eyebrow">{ui.latest} 01</p><h2 id="latest-heading">{ui.latest}</h2></div><span class="pulse-label"><i aria-hidden="true"></i>{ui.monitoring}</span></div>
   {lead ? <div class:list={['briefing-board', { 'single-story': headlines.length === 0 }]}>
