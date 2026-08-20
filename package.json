@@ -25,9 +25,9 @@
     "check": "bun run quality && bun run typecheck && bun run contract && bun run themes:check"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.7",
+    "@biomejs/biome": "2.5.8",
     "@types/bun": "latest",
-    "typescript": "^5.9.0",
+    "typescript": "^7.0.2",
     "zod": "^4.0.0"
   }
 }
